@@ -1,0 +1,43 @@
+<h3>admin</h3>
+<hr>
+<section class="flex-row">
+    <ul>
+        <li @click="activeMenu = 'general'">通用</li>
+        <li @click="activeMenu = 'user'">用户</li>
+        <li @click="activeMenu = 'external-links'">外部连接</li>
+        <li @click="activeMenu = 'model'">模型</li>
+        <li @click="activeMenu = 'document'">文档</li>
+        <li @click="activeMenu = 'web-search'">网络搜索</li>
+        <li @click="activeMenu = 'interface'">界面</li>
+        <li @click="activeMenu = 'voice'">语音</li>
+        <li @click="activeMenu = 'image'">图像</li>
+        <li @click="activeMenu = 'pipeline'">Pipeline</li>
+        <li @click="activeMenu = 'database'">数据库</li>
+    </ul>
+    <div x-show="activeMenu === 'general'">
+        <!-- Home 页面内容 -->
+        <h1>Home</h1>
+        <p>This is the home page.</p>
+    </div>
+
+    <div x-show="activeMenu === 'user'">
+        <label>
+            <input name="terms" type="checkbox" role="switch" />
+            允许用户注册
+        </label>
+        <table></table>
+    </div>
+
+    <div x-show="activeMenu === 'contact'">
+        <!-- Contact 页面内容 -->
+        <h1>Contact</h1>
+        <p>This is the contact page.</p>
+    </div>
+</section>
+<!--<script>-->
+<!--    document.addEventListener('alpine:init', () => {-->
+<!--        Alpine.data('moechat', () => ({-->
+<!--            -->
+<!--        }))-->
+<!--    })-->
+<!--</script>-->
