@@ -2,7 +2,7 @@
 <html lang="en" x-data="moechat">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>MoeChat</title>
     <link rel="icon" type="image/jpg" href="/assets/img/favicon.jpg" />
     <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
     <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
@@ -49,15 +49,21 @@
     </style>
 </head>
 <body class="flex-row">
-    <aside class="flex-1 flex-col justify-between" x-html="devFetch(`aside.html`)" x-show="menuShow"></aside>
-    <main class="flex-5 flex-col justify-between h-screen" x-html="devFetch(`main.html`)"></main>
-    <main class="flex-5 flex-col p-5" x-html="devFetch(`admin.html`)"></main>
+    <aside class="flex-1 flex-col justify-between"  x-init="devFetch($el)" x-show="menuShow">
+        {{template "aside.html"}}
+    </aside>
+    <main class="flex-5 flex-col justify-between h-screen"  x-init="devFetch($el)">
+        {{template "main.html"}}
+    </main>
 </body>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('moechat', () => ({
-            async devFetch(url){
-                return await (await fetch(url)).text()
+            async devFetch(el){
+                let xText=el.innerText
+                if (xText.includes('{') && xText.includes('}')) {
+                    el.innerHTML= await (await fetch(xText.split('"')[1])).text()
+                }
             },
             menuShow:true,
             chatSettingShow:false,

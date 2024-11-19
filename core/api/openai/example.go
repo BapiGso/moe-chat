@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	example()
+	//example()
 }
 
 func example() {

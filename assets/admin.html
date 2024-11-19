@@ -1,65 +1,162 @@
-<h3>admin</h3>
-<hr>
-<section class="flex-row">
-    <ul>
-        <li @click="activeMenu = 'general'">通用</li>
-        <li @click="activeMenu = 'user'">用户</li>
-        <li @click="activeMenu = 'model'">模型</li>
-<!--        <li @click="activeMenu = 'document'">文档</li>-->
-<!--        <li @click="activeMenu = 'web-search'">网络搜索</li>-->
-<!--        <li @click="activeMenu = 'interface'">界面</li>-->
-<!--        <li @click="activeMenu = 'voice'">语音</li>-->
-<!--        <li @click="activeMenu = 'image'">图像</li>-->
-<!--        <li @click="activeMenu = 'pipeline'">Pipeline</li>-->
-        <li @click="activeMenu = 'database'">数据库</li>
-    </ul>
-    <div x-show="activeMenu === 'general'">
-        <!-- Home 页面内容 -->
-        <h1>Home</h1>
-        <p>This is the home page.</p>
-    </div>
+<!DOCTYPE html>
+<html lang="en" x-data="moechat">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/jpg" href="/assets/img/favicon.jpg" />
+    <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
+    <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
+    <style>
+        [data-theme=light],
+        :root:not([data-theme=dark]) {
+            --pico-accordion-active-summary-color: #0009;
+            --pico-text-selection-color: #E7B6EE33;
+            --pico-primary: #943DA5;
+            --pico-font-family-sans-serif: Inter, system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+            --pico-font-size: 95%;
+            /* Original: 100% */
+            --pico-line-height: 1.1;
+            /* Original: 1.5 */
+            --pico-form-element-spacing-vertical: 0.5rem;
+            /* Original: 1rem */
+            --pico-form-element-spacing-horizontal: 1.0rem;
+            /* Original: 1.25rem */
+            --pico-border-radius: 0.375rem;
+            /* Original: 0.25rem */
+            --pico-block-spacing-vertical: 0;
+            /* Original: 1rem */
+        }
 
-    <div x-show="activeMenu === 'user'">
-        <label>
-            <input name="terms" type="checkbox" role="switch" />
-            允许用户注册
-        </label>
-        <table></table>
-    </div>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
 
-    <div x-show="activeMenu === 'model'">
-        <table>
-            <thead>
+        aside {
+            background-color: rgba(66, 54, 235, 0.2);
+
+        }
+
+        main {
+            & header{
+                & details{
+                    margin-bottom: 0;
+                }
+            }
+        }
+    </style>
+</head>
+<body class="flex-col w-screen align-center">
+    <nav class="p-5 w-full">
+        <ul>
+            <li><strong>Moe Chat</strong></li>
+        </ul>
+        <ul>
+            <li class="py-4 list-none" @click="activeMenu = 'user'">用户</li>
+            <li class="py-4 list-none" @click="activeMenu = 'model'">模型</li>
+            <!--        <li @click="activeMenu = 'document'">文档</li>-->
+            <!--        <li @click="activeMenu = 'web-search'">网络搜索</li>-->
+            <!--        <li @click="activeMenu = 'interface'">界面</li>-->
+            <!--        <li @click="activeMenu = 'voice'">语音</li>-->
+            <!--        <li @click="activeMenu = 'image'">图像</li>-->
+            <!--        <li @click="activeMenu = 'pipeline'">Pipeline</li>-->
+            <li class="py-4 list-none" @click="activeMenu = 'database'">数据库</li>
+        </ul>
+    </nav>
+    <section class="flex-row w-full">
+        <div class="p-5 w-full" x-show="activeMenu === 'user'">
+            <label>
+                <input name="terms" type="checkbox" role="switch" />
+                允许用户注册
+            </label>
+            <table>
+                <thead>
                 <tr>
-                    <td>name</td>
-                    <td>baseurl</td>
-                    <td>token</td>
+                    <td>头像</td>
+                    <td>email</td>
+                    <td>最后在线时间</td>
+                    <td>创建于</td>
                     <td>action</td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td x-text="`OPENAI`"></td>
-                    <td><input type="text" name="baseurl" /></td>
-                    <td><input type="text" name="token" /></td>
-                    <td>
-                        <input name="terms" type="checkbox" role="switch" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                <template x-for="x in (await (await fetch(`/admin/user`,{method:'POST'})).json())">
+                    <tr>
+                        <td><img :src="x.ProfileImageURL || '/assets/img/default-avatar.png'" alt="Avatar" class="w-8 h-8 rounded-full"></td>
+                        <td x-text="x.Email"></td>
+                        <td x-text="new Date(x.UpdatedAt * 1000).toLocaleString()"></td>
+                        <td x-text="new Date(x.CreatedAt * 1000).toLocaleString()"></td>
+                        <td><button>drop</button></td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
 
-    <div x-show="activeMenu === 'database'">
-        <button>Download Database</button>
-        <hr>
-        <button>Export LifeLLM config.yaml File</button>
-    </div>
-</section>
-<!--<script>-->
-<!--    document.addEventListener('alpine:init', () => {-->
-<!--        Alpine.data('moechat', () => ({-->
-<!--            -->
-<!--        }))-->
-<!--    })-->
-<!--</script>-->
+        <div class="p-5 w-full" x-show="activeMenu === 'model'">
+            <p>
+                <details class="dropdown">
+                    <summary>🆕</summary>
+                    <ul>
+                        <li @click.prevent="addModelRow('OpenAI')">OpenAI</li>
+                        <li @click.prevent="addModelRow('Claude')">Claude</li>
+                        <li @click.prevent="addModelRow('Gemini')">Gemini</li>
+                    </ul>
+                </details>
+            </p>
+
+            <table>
+                <thead>
+                <tr>
+                    <td>备注名</td>
+                    <td>API接口地址</td>
+                    <td>Token</td>
+                    <td>模型列表请求地址</td>
+                    <td>手动填写模型名称</td>
+                    <td>Action</td>
+                </tr>
+                </thead>
+                <tbody>
+                <template x-for="x in models" :key="index">
+                    <tr>
+                        <td><input type="text" x-model="model.name"></td>
+                        <td><input type="text" x-model="model.apiUrl"></td>
+                        <td><input type="text" x-model="model.token"></td>
+                        <td><input type="text" x-model="model.modelListUrl"></td>
+                        <td><input type="text" x-model="model.manualModelName"></td>
+                        <td><button @click="removeModelRow(index)">删除</button></td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-5 w-full" x-show="activeMenu === 'database'">
+            <button>Download Database</button>
+            <hr>
+            <button>Export LifeLLM config.yaml File</button>
+        </div>
+    </section>
+</body>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('moechat', () => ({
+            activeMenu:"",
+            models: [],
+            addModelRow(provider) {
+                let defaultValues = {
+                    OpenAI: { apiUrl: 'https://api.openai.com/v1', token: '', modelListUrl: 'https://api.openai.com/v1/models', manualModelName: '' },
+                    Claude: { apiUrl: 'https://api.claude.ai/v1', token: '', modelListUrl: 'https://api.claude.ai/v1/models', manualModelName: '' },
+                    Gemini: { apiUrl: 'https://api.gemini.ai/v1', token: '', modelListUrl: 'https://api.gemini.ai/v1/models', manualModelName: '' }
+                };
+                this.models.push({ name: provider, ...defaultValues[provider] });
+            },
+
+            removeModelRow(index) {
+                this.models.splice(index, 1);
+            }
+        }))
+    })
+</script>

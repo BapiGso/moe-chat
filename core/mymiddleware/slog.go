@@ -31,12 +31,14 @@ var Slog = middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 	LogRemoteIP: true,
 	LogError:    true,
 	LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-		slog.LogAttrs(context.Background(), slog.LevelInfo, fmt.Sprintf("err=%v", v.Error),
-			slog.String("Method", v.Method),
-			slog.String("Url", v.URI),
-			slog.String("IP", v.RemoteIP),
-			slog.Int("Status", v.Status),
-		)
+		if v.Error != nil {
+			slog.LogAttrs(context.Background(), slog.LevelInfo, fmt.Sprintf("err=%v", v.Error),
+				slog.String("Method", v.Method),
+				slog.Int("Status", v.Status),
+				slog.String("Url", v.URI),
+				slog.String("IP", v.RemoteIP),
+			)
+		}
 		return nil
 	},
 })

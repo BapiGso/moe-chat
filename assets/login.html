@@ -125,9 +125,8 @@
 
         /* 图片盒子 */
         img{
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
+            width: 70%;
+            /*height: 200px;*/
             /* 设置为圆形 */
             border-radius: 50%;
             /* 设置用户禁止选中 */
@@ -135,7 +134,6 @@
             overflow: hidden;
             box-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
             transition: 0.5s;
-
         }
 
 
@@ -231,19 +229,20 @@
         <p>SMOE!</p>
         <img src="/assets/img/waoku.webp" alt="">
     </section>
-    <form action="?action=register" method="post">
+    <form action="" method="post">
         <h1>Register</h1>
-        <input type="text" placeholder="username" name="user" aria-label>
-        <input type="email" placeholder="mail" name="mail" aria-label>
+        <input type="hidden" name="action" value="register">
+        <input type="email" placeholder="email" name="email" aria-label>
         <input type="password" placeholder="password" name="pwd" aria-label>
         <fieldset role="group">
             <input type="submit" value="创建账户">
             <p onclick="mySwitch()">SWITCH</p>
         </fieldset>
     </form>
-    <form action="?action=login" method="post">
+    <form action="" method="post">
         <h1>Login</h1>
-        <input type="email" placeholder="mail" name="mail" aria-label>
+        <input type="hidden" name="action" value="login">
+        <input type="email" placeholder="email" name="email" aria-label>
         <input type="password" placeholder="password" name="pwd" aria-label>
         <fieldset role="group">
             <input type="submit" value="登录">

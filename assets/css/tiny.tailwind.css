@@ -366,7 +366,23 @@
     overflow-y: scroll;
 }
 
-/* ... */
+/* width */
+.w-screen {
+    width: 100vw;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w-auto {
+    width: auto;
+}
+
+.w-0 {
+    width: 0;
+}
+
 
 /* height */
 .h-screen {
@@ -443,6 +459,10 @@
 
 .resize-none {
     resize: none;
+}
+
+.list-none{
+    list-style-type: none;
 }
 
 .logo{
