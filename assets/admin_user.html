@@ -1,0 +1,27 @@
+
+    <label>
+        <input name="terms" type="checkbox" role="switch" />
+        允许用户注册
+    </label>
+    <table>
+        <thead>
+        <tr>
+            <td>头像</td>
+            <td>email</td>
+            <td>最后在线时间</td>
+            <td>创建于</td>
+            <td>action</td>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="x in (await (await fetch(`/admin/user`,{method:'POST'})).json())">
+            <tr>
+                <td><img :src="x.ProfileImageURL || '/assets/img/default-avatar.png'" alt="Avatar" class="w-8 h-8 rounded-full"></td>
+                <td x-text="x.Email"></td>
+                <td x-text="new Date(x.UpdatedAt * 1000).toLocaleString()"></td>
+                <td x-text="new Date(x.CreatedAt * 1000).toLocaleString()"></td>
+                <td><button>drop</button></td>
+            </tr>
+        </template>
+        </tbody>
+    </table>

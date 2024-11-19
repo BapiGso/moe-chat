@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" x-data="moechat">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/jpg" href="/assets/img/favicon.jpg" />
+    <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
+    <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
+    <style>
+        [data-theme=light],
+        :root:not([data-theme=dark]) {
+            --pico-accordion-active-summary-color: #0009;
+            --pico-text-selection-color: #E7B6EE33;
+            --pico-primary: #943DA5;
+            --pico-font-family-sans-serif: Inter, system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+            --pico-font-size: 95%;
+            /* Original: 100% */
+            --pico-line-height: 1.1;
+            /* Original: 1.5 */
+            --pico-form-element-spacing-vertical: 0.5rem;
+            /* Original: 1rem */
+            --pico-form-element-spacing-horizontal: 1.0rem;
+            /* Original: 1.25rem */
+            --pico-border-radius: 0.375rem;
+            /* Original: 0.25rem */
+            --pico-block-spacing-vertical: 0;
+            /* Original: 1rem */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        aside {
+            background-color: rgba(66, 54, 235, 0.2);
+
+        }
+
+        main {
+            & header{
+                & details{
+                    margin-bottom: 0;
+                }
+            }
+        }
+    </style>
+</head>
+<body class="flex-col w-screen align-center">
+    <nav class="p-5 w-full">
+        <ul>
+            <li><strong>Moe Chat</strong></li>
+        </ul>
+        <ul>
+            <li class="py-4 list-none" @click="menuActive='user'">用户</li>
+            <li class="py-4 list-none" @click="menuActive='model'">模型</li>
+            <!--        <li @click="activeMenu = 'document'">文档</li>-->
+            <!--        <li @click="activeMenu = 'web-search'">网络搜索</li>-->
+            <!--        <li @click="activeMenu = 'interface'">界面</li>-->
+            <!--        <li @click="activeMenu = 'voice'">语音</li>-->
+            <!--        <li @click="activeMenu = 'image'">图像</li>-->
+            <!--        <li @click="activeMenu = 'pipeline'">Pipeline</li>-->
+            <li class="py-4 list-none" @click="menuActive='database'">数据库</li>
+        </ul>
+    </nav>
+    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='user'">
+        {{template "admin_user.html"}}
+    </section>
+    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='model'">
+        {{template "admin_model.html"}}<
+    </section>
+    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='database'">
+        {{template "admin_database.html"}}
+    </section>
+</body>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('moechat', () => ({
+            menuActive:"model",
+            async devFetch(el){
+                let xText=el.innerText
+                if (xText.includes('{') && xText.includes('}')) {
+                    el.innerHTML= await (await fetch(xText.split('"')[1])).text()
+                }
+            },
+        }))
+    })
+</script>

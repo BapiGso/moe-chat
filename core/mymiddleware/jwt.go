@@ -54,7 +54,7 @@ func login(c echo.Context, err error) error {
 			user := &database.User{
 				Email:           req.Email,
 				Password:        hash,
-				Level:           database.LevelGuest,
+				Level:           database.LevelPending,
 				ProfileImageURL: "",
 				CreatedAt:       int(time.Now().Unix()),
 				UpdatedAt:       int(time.Now().Unix()),
