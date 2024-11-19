@@ -4,14 +4,13 @@
     <ul>
         <li @click="activeMenu = 'general'">通用</li>
         <li @click="activeMenu = 'user'">用户</li>
-        <li @click="activeMenu = 'external-links'">外部连接</li>
         <li @click="activeMenu = 'model'">模型</li>
-        <li @click="activeMenu = 'document'">文档</li>
-        <li @click="activeMenu = 'web-search'">网络搜索</li>
-        <li @click="activeMenu = 'interface'">界面</li>
-        <li @click="activeMenu = 'voice'">语音</li>
-        <li @click="activeMenu = 'image'">图像</li>
-        <li @click="activeMenu = 'pipeline'">Pipeline</li>
+<!--        <li @click="activeMenu = 'document'">文档</li>-->
+<!--        <li @click="activeMenu = 'web-search'">网络搜索</li>-->
+<!--        <li @click="activeMenu = 'interface'">界面</li>-->
+<!--        <li @click="activeMenu = 'voice'">语音</li>-->
+<!--        <li @click="activeMenu = 'image'">图像</li>-->
+<!--        <li @click="activeMenu = 'pipeline'">Pipeline</li>-->
         <li @click="activeMenu = 'database'">数据库</li>
     </ul>
     <div x-show="activeMenu === 'general'">
@@ -28,10 +27,33 @@
         <table></table>
     </div>
 
-    <div x-show="activeMenu === 'contact'">
-        <!-- Contact 页面内容 -->
-        <h1>Contact</h1>
-        <p>This is the contact page.</p>
+    <div x-show="activeMenu === 'model'">
+        <table>
+            <thead>
+                <tr>
+                    <td>name</td>
+                    <td>baseurl</td>
+                    <td>token</td>
+                    <td>action</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td x-text="`OPENAI`"></td>
+                    <td><input type="text" name="baseurl" /></td>
+                    <td><input type="text" name="token" /></td>
+                    <td>
+                        <input name="terms" type="checkbox" role="switch" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div x-show="activeMenu === 'database'">
+        <button>Download Database</button>
+        <hr>
+        <button>Export LifeLLM config.yaml File</button>
     </div>
 </section>
 <!--<script>-->

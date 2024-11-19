@@ -7,11 +7,11 @@ import (
 )
 
 func init() {
-	//example()
+	example()
 }
 
 func example() {
-	config := openai.DefaultAzureConfig("", "https://models.inference.ai.azure.com")
+	config := openai.DefaultAzureConfig("sk-esGX9mNr6eW5ptPfLzjMz8DfwgNVrPqwlY6vg2sC9KtSh9E3", "https://api.deepseek.com")
 	// If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
 	//config.AzureModelMapperFunc = func(model string) string {
 	//	azureModelMapping := map[string]string{
@@ -24,7 +24,7 @@ func example() {
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4o,
+			Model: "deepseek-chat",
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -33,6 +33,30 @@ func example() {
 			},
 		},
 	)
+	if err != nil {
+		fmt.Printf("ChatCompletion error: %v\n", err)
+		return
+	}
+
+	fmt.Println(resp.Choices[0].Message.Content)
+}
+
+func example2() {
+
+	client := openai.NewClient("sk-Ho9hOFUHszHcItvsb1200AHQExqAqnvOuJXNW9xHGLmSddLn")
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT4oMini,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "Hello!",
+				},
+			},
+		},
+	)
+
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
 		return

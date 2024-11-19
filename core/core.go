@@ -4,7 +4,7 @@ import (
 	"embed"
 	"github.com/labstack/echo/v4"
 	"moechat/assets"
-	//_ "moechat/core/api/openai"
+	_ "moechat/core/api/openai"
 	_ "moechat/core/database"
 )
 

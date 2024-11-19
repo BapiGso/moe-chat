@@ -13,18 +13,12 @@
             box-sizing: border-box;
         }
 
-        /* 去除input的轮廓 */
-        input {
-            outline: none;
-        }
-
         html,
         body {
             height: 100%;
         }
 
         body {
-            /* 溢出隐藏 */
             overflow-x: hidden;
             display: flex;
             /* 渐变方向从左到右 */
@@ -63,7 +57,7 @@
                 transform: translate(-20%, -1200%);
             }
 
-            99% {
+            95% {
                 opacity: .9;
             }
 
@@ -74,15 +68,13 @@
         }
 
         /* 最外层的大盒子 */
-        .box {
+        article {
             width: 50vw;
             height: 30vw;
             display: flex;
-            /* 相对定位 */
             position: relative;
             z-index: 2;
             margin: auto;
-            /* 设置圆角 */
             border-radius: 8px;
             /* 设置边框 */
             border: 1px solid rgba(255, 255, 255, .6);
@@ -91,9 +83,9 @@
         }
 
         /* 滑动的盒子 */
-        .pre-box {
+        section {
             /* 宽度为大盒子的一半 */
-            width: 25vw;
+            width: 50%;
             height: 100%;
             /* 绝对定位 */
             position: absolute;
@@ -111,6 +103,7 @@
             justify-content: center;
             & h1{
                 /* 文字间距 */
+                margin: 0 0 0 0;
                 letter-spacing: 5px;
                 color: white;
                 /* 禁止选中 */
@@ -131,7 +124,7 @@
 
 
         /* 图片盒子 */
-        .img-box {
+        img{
             width: 200px;
             height: 200px;
             margin: 20px auto;
@@ -141,45 +134,50 @@
             user-select: none;
             overflow: hidden;
             box-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
-            & img{
-                width: 100%;
-                transition: 0.5s;
-            }
+            transition: 0.5s;
+
         }
 
 
         /* 登录和注册盒子 */
-        .login-form,
-        .register-form {
+        form {
             flex: 1;
             height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            & fieldset {
+                display: flex;
+                justify-content: center;
+                border: none;
+                & p{
+                    height: 30px;
+                    line-height: 30px;
+                    user-select: none;
+                    font-size: 14px;
+                    color: white;
+                }
+                & p:hover{
+                    cursor: pointer;
+                    border-bottom: 1px solid white;
+
+                }
+            }
         }
 
 
         /* 标题 */
-        .title-box h1 {
-            margin: 30px;
+        h1 {
+            font-size: 2em;
+            margin: .5em 0 1.5em 0;
             color: white;
-            /* 禁止选中 */
             user-select: none;
             letter-spacing: 5px;
             text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
 
         }
 
-        /* 输入框盒子 */
-        .input-box {
-            width: 100%;
-            display: flex;
-            /* 纵向布局 */
-            flex-direction: column;
-            /* 水平居中 */
-            align-items: center;
-        }
 
         /* 输入框 */
         input {
@@ -192,10 +190,10 @@
             border-radius: 120px;
             /* 增加磨砂质感 */
             backdrop-filter: blur(10px);
+            outline: none;
+            /* 光标颜色 */
             &:focus {
-                /* 光标颜色 */
                 color: #b0cfe9;
-
             }
             /* 聚焦时隐藏文字 */
             &:focus::placeholder {
@@ -206,13 +204,6 @@
 
 
 
-
-        /* 按钮盒子 */
-        .btn-box {
-            display: flex;
-            justify-content: center;
-        }
-
         /* 按钮 */
         input[type="submit"] {
             width: 100px;
@@ -221,89 +212,51 @@
             line-height: 30px;
             border: none;
             border-radius: 4px;
-            background-color: #69b3f0;
+            background-color: #6cf8;
             color: white;
             flex-direction: initial;
         }
 
-        /* 按钮悬停时 */
         input[type="submit"]:hover {
-            /* 鼠标小手 */
             cursor: pointer;
-            /* 透明度 */
             opacity: .8;
         }
 
-        /* 按钮文字 */
-        .input-box p,
-        .btn-box p {
-            height: 30px;
-            line-height: 30px;
-            /* 禁止选中 */
-            user-select: none;
-            font-size: 14px;
-            color: white;
-
-        }
-
-        .input-box p:hover,
-        .btn-box p:hover {
-            cursor: pointer;
-            border-bottom: 1px solid white;
-            flex-direction: initial;
-        }
     </style>
 </head>
 <body>
-<!-- 最外层的大盒子 -->
-<div class="box">
-    <!-- 滑动盒子 -->
-    <div class="pre-box">
+<article>
+    <section>
         <h1>WELCOME</h1>
         <p>SMOE!</p>
-        <div class="img-box">
-            <img src="/assets/new-admin/img/waoku.webp" alt="">
-        </div>
-    </div>
-    <!-- 注册盒子 -->
-    <div class="register-form">
-        <!-- 标题盒子 -->
-        <div class="title-box">
-            <h1>瞬きでさえも</h1>
-        </div>
-        <!-- 输入框盒子 -->
-        <form class="input-box" action="/admin" method="post">
-            <input type="password" placeholder="挽き留めるのならば" name="illsions">
-            <div class="btn-box">
-                <input type="submit" value="語ろう">
-                <!-- 绑定点击事件 -->
-                <p onclick="mySwitch()">SWITCH</p>
-            </div>
-        </form>
-    </div>
-    <!-- 登录盒子 -->
-    <div class="login-form">
-        <!-- 标题盒子 -->
-        <div class="title-box">
-            <h1>LOGIN</h1>
-        </div>
-        <!-- 输入框盒子 -->
-        <form  class="input-box" action="/admin" method="post">
-            <input type="text" placeholder="別離は時には" name="user">
-            <input type="password" placeholder="物語の終焉を意味しない" name="pwd">
-            <!-- 按钮盒子 -->
-            <div class="btn-box">
-                <input type="submit" value="語ろう">
-                <!-- 绑定点击事件 -->
-                <p onclick="mySwitch()">SWITCH</p>
-            </div>
-        </form >
-    </div>
-</div>
+        <img src="/assets/img/waoku.webp" alt="">
+    </section>
+    <form action="?action=register" method="post">
+        <h1>Register</h1>
+        <input type="text" placeholder="username" name="user" aria-label>
+        <input type="email" placeholder="mail" name="mail" aria-label>
+        <input type="password" placeholder="password" name="pwd" aria-label>
+        <fieldset role="group">
+            <input type="submit" value="创建账户">
+            <p onclick="mySwitch()">SWITCH</p>
+        </fieldset>
+    </form>
+    <form action="?action=login" method="post">
+        <h1>Login</h1>
+        <input type="email" placeholder="mail" name="mail" aria-label>
+        <input type="password" placeholder="password" name="pwd" aria-label>
+        <fieldset role="group">
+            <input type="submit" value="登录">
+            <!-- 绑定点击事件 -->
+            <p onclick="mySwitch()">SWITCH</p>
+        </fieldset>
+    </form >
+
+</article>
 <script>
     // 滑动的状态
     let flag=true
-    let prebox =document.getElementsByClassName('pre-box')[0]
+    let prebox =document.getElementsByTagName('section')[0]
     let img=document.getElementsByTagName('img')[0]
     const mySwitch=()=>{
         if(flag){
@@ -312,12 +265,12 @@
             // 获取到滑动盒子的dom元素并修改它的背景颜色
             prebox.style.backgroundColor ='#c9e0ed'
             //修改图片的路径
-            img.setAttribute("src","/assets/new-admin/img/wuwu.webp")
+            img.setAttribute("src","/assets/img/wuwu.webp")
         }
         else {
             prebox.style.transform='translateX(0%)'
             prebox.style.backgroundColor ='#ded4ed'
-            img.setAttribute("src","/assets/new-admin/img/waoku.webp")
+            img.setAttribute("src","/assets/img/waoku.webp")
         }
         flag=!flag
     }
