@@ -111,8 +111,7 @@ CREATE TABLE IF NOT EXISTS "migratehistory" (
 	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "model" (
-    "name"	TEXT NOT NULL,
-    "type"	TEXT NOT NULL,
+    "type"	TEXT NOT NULL PRIMARY KEY,
     "api_url"	TEXT NOT NULL,
     "api_key"	TEXT NOT NULL,
     "active"	INTEGER NOT NULL,

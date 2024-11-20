@@ -11,7 +11,7 @@ func init() {
 }
 
 func example() {
-	config := openai.DefaultAzureConfig("xai-InoKzUTRlinbYo2QzRSpBzdh9eOzowv86XgT5hmqn14vXqdyMvuMBJN0x29MyE1KeLuLbZivdlPuWPt6", "https://api.x.ai/v1/chat/completions")
+	config := openai.DefaultAzureConfig("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", "https://models.inference.ai.azure.com/")
 	// If you use a deployment name different from the model name, you can customize the AzureModelMapperFunc function
 	//config.AzureModelMapperFunc = func(model string) string {
 	//	azureModelMapping := map[string]string{
@@ -24,7 +24,7 @@ func example() {
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: "grok-beta",
+			Model: openai.GPT4oMini,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,

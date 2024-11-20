@@ -1,4 +1,4 @@
-<details open @submit.prevent="updateModel" class="w-half py-3">
+<details @submit.prevent="updateModel" class="w-half py-3">
     <summary>
         <b>OpenAI</b>
     </summary>
@@ -6,7 +6,6 @@
         <label class="py-3">
             启用
             <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="name" value="OpenAI">
             <input type="hidden" name="type" value="OpenAI">
         </label>
         <label>
@@ -33,7 +32,6 @@
         <label class="py-3">
             启用
             <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="name" value="Azure">
             <input type="hidden" name="type" value="Azure">
         </label>
         <label>
@@ -54,13 +52,38 @@
 
 <details @submit.prevent="updateModel" class="w-half py-3">
     <summary>
+        <b>GitHub Model</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="type" value="GitHub">
+        </label>
+        <label>
+            Github PAT
+            <input name="apikey" placeholder="ghp_xxx" required>
+        </label>
+        <label>
+<!--            API 代理地址-->
+            <input type="hidden" name="apiurl" value="https://models.inference.ai.azure.com/"/>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
+
+<details @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
         <b>Ollama</b>
     </summary>
     <form>
         <label class="py-3">
             启用
             <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="name" value="Ollama">
             <input type="hidden" name="type" value="Ollama">
         </label>
         <label>
@@ -87,7 +110,6 @@
         <label class="py-3">
             启用
             <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="name" value="Claude">
             <input type="hidden" name="type" value="Claude">
         </label>
         <label>
@@ -114,7 +136,6 @@
         <label class="py-3">
             启用
             <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="name" value="Gemini">
             <input type="hidden" name="type" value="Gemini">
         </label>
         <label>
@@ -132,7 +153,3 @@
         <button type="submit">保存并检查</button>
     </form>
 </details>
-
-
-
-

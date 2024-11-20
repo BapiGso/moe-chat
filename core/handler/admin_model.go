@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/labstack/echo/v4"
+	"moechat/core/api"
 	"moechat/core/database"
 	"net/http"
 	"time"
@@ -9,7 +10,6 @@ import (
 
 func AdminModel(c echo.Context) error {
 	req := &struct {
-		Name      string `form:"name" json:"name" db:"id"`
 		Type      string `form:"type" json:"type" db:"type"`
 		APIUrl    string `form:"apiurl" json:"apiurl" db:"api_url"`
 		APIKey    string `form:"apikey" json:"apikey" db:"api_key"`
@@ -30,11 +30,13 @@ func AdminModel(c echo.Context) error {
 		return c.JSON(http.StatusOK, models)
 	case http.MethodPut:
 		req.CreatedAt = int(time.Now().Unix())
-		exec, err := database.DB.NamedExec(`INSERT OR REPLACE INTO model (name, type, api_url, api_key, active, list, created_at)
-VALUES (:name, :type, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
+		exec, err := database.DB.NamedExec(`INSERT OR REPLACE INTO model ( type, api_url, api_key, active, list, created_at)
+VALUES ( :type, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
 		if err != nil {
 			return err
 		}
+		a := api.New(req.Type)
+		a.GetModelList()
 		return c.JSON(http.StatusOK, exec)
 	case http.MethodDelete:
 
