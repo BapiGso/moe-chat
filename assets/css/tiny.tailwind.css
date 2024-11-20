@@ -371,6 +371,10 @@
     width: 100vw;
 }
 
+.w-half{
+    width: 50%;
+}
+
 .w-full {
     width: 100%;
 }
@@ -455,6 +459,10 @@
 
 .h-14 {
     height: 3.5rem;
+}
+
+.rounded-full{
+    border-radius: 9999px;
 }
 
 .resize-none {

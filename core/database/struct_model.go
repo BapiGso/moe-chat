@@ -1,12 +1,11 @@
 package database
 
 type Model struct {
-	ID          string `db:"id"`
-	Email       string `db:"email"`
-	BaseModelID string `db:"base_model_id"`
-	Name        string `db:"name"`
-	Meta        string `db:"meta"`
-	Params      string `db:"params"`
-	CreatedAt   int    `db:"created_at"`
-	UpdatedAt   int    `db:"updated_at"`
+	Name      string `db:"name"`
+	Type      string `db:"type"`
+	APIUrl    string `db:"api_url"`
+	APIKey    string `db:"api_key"`
+	Active    int    `db:"active"`
+	List      string `db:"list"`
+	CreatedAt int    `db:"created_at"`
 }

@@ -111,15 +111,14 @@ CREATE TABLE IF NOT EXISTS "migratehistory" (
 	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "model" (
-	"id"	TEXT NOT NULL,
-	"user_id"	TEXT NOT NULL,
-	"base_model_id"	TEXT NOT NULL,
-	"name"	TEXT NOT NULL,
-	"meta"	TEXT NOT NULL,
-	"params"	TEXT NOT NULL,
-	"created_at"	INTEGER NOT NULL,
-	"updated_at"	INTEGER NOT NULL
-);
+    "name"	TEXT NOT NULL,
+    "type"	TEXT NOT NULL,
+    "api_url"	TEXT NOT NULL,
+    "api_key"	TEXT NOT NULL,
+    "active"	INTEGER NOT NULL,
+    "list"	TEXT NOT NULL,
+    "created_at"	INTEGER NOT NULL
+    );
 CREATE TABLE IF NOT EXISTS "prompt" (
 	"id"	INTEGER NOT NULL,
 	"command"	VARCHAR(255) NOT NULL,
@@ -156,6 +155,10 @@ CREATE TABLE IF NOT EXISTS "user" (
     "updated_at" INTEGER NOT NULL,
     "settings" TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS "setting" (
+    "key" VARCHAR(255) NOT NULL,
+    "value" TEXT NOT NULL
+);
 CREATE UNIQUE INDEX IF NOT EXISTS "chat_id" ON "chat" (
 	"id"
 );
@@ -178,9 +181,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS "function_id" ON "function" (
 	"id"
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "memory_id" ON "memory" (
-	"id"
-);
-CREATE UNIQUE INDEX IF NOT EXISTS "model_id" ON "model" (
 	"id"
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "prompt_command" ON "prompt" (

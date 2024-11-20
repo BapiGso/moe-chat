@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <td>头像</td>
+            <td>level</td>
             <td>email</td>
             <td>最后在线时间</td>
             <td>创建于</td>
@@ -17,10 +18,19 @@
         <template x-for="x in (await (await fetch(`/admin/user`,{method:'POST'})).json())">
             <tr>
                 <td><img :src="x.ProfileImageURL || '/assets/img/default-avatar.png'" alt="Avatar" class="w-8 h-8 rounded-full"></td>
+                <td>
+                    <select class="m-0" @change="updateUser(x.Email, $event.target.value)" aria-label>
+                        <option value="pending" :selected="x.Level === 'pending'">pending</option>
+                        <option value="user" :selected="x.Level === 'user'">user</option>
+                        <option value="admin" :selected="x.Level === 'admin'">admin</option>
+                    </select>
+                </td>
                 <td x-text="x.Email"></td>
                 <td x-text="new Date(x.UpdatedAt * 1000).toLocaleString()"></td>
                 <td x-text="new Date(x.CreatedAt * 1000).toLocaleString()"></td>
-                <td><button>drop</button></td>
+                <td>
+                    <i @click="deleteUser(x.Email,$el.closest('tr'))">❌</i>
+                </td>
             </tr>
         </template>
         </tbody>

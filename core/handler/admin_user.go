@@ -6,7 +6,15 @@ import (
 	"net/http"
 )
 
-func User(c echo.Context) error {
+func AdminUser(c echo.Context) error {
+	req := &struct {
+		Email string `query:"email" json:"email" `
+		Level string `query:"level" json:"level" `
+	}{}
+	if err := c.Bind(req); err != nil {
+		return err
+	}
+
 	switch c.Request().Method {
 	case http.MethodPost:
 		var users []database.User
@@ -15,8 +23,19 @@ func User(c echo.Context) error {
 			return err
 		}
 		return c.JSON(http.StatusOK, users)
+	case http.MethodPut:
+		result, err := database.DB.Exec("UPDATE user SET level = ? WHERE email = ?", req.Level, req.Email)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, result)
+	case http.MethodDelete:
+		result, err := database.DB.Exec("DELETE FROM user WHERE email = ?", req.Email)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, result)
 	case http.MethodGet:
-		return c.Render(http.StatusOK, "handler.html", nil)
 	}
 	return echo.ErrMethodNotAllowed
 }

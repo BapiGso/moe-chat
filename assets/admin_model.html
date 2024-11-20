@@ -1,54 +1,138 @@
+<details open @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
+        <b>OpenAI</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="name" value="OpenAI">
+            <input type="hidden" name="type" value="OpenAI">
+        </label>
+        <label>
+            API Key
+            <input name="apikey" placeholder="" required>
+        </label>
+        <label>
+            API 代理地址
+            <input type="url" name="apiurl" placeholder="https://api.openai.com/v1" required>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
 
-    <details>
-        <summary>
-            <b>OpenAI</b>
-            <input type="checkbox" role="switch" class="mx-5">
-        </summary>
-        <form>
-            <fieldset role="group">
-                <input type="submit" value="API Key" />
-                <input name="email" placeholder="Enter your email"  />
-            </fieldset>
-            <fieldset role="group">
-                <input type="submit" value="API 代理地址" />
-                <input name="email" placeholder="Enter your email"  />
-            </fieldset>
-            <fieldset role="group">
-                <input type="submit" value="模型列表" />
-                <input name="email" placeholder="Enter your email"  />
-            </fieldset>
-            <fieldset role="group">
-                <input type="submit" value="连通性检查" />
-            </fieldset>
-        </form>
-    </details>
-    <details>
-        <summary>
-            <b>Microsoft Azure</b>
-            <input type="checkbox" role="switch" class="mx-5">
-        </summary>
-        <p>...</p>
-    </details>
-    <details>
-        <summary>
-            <b>Ollama</b>
-            <input type="checkbox" role="switch" class="mx-5">
-        </summary>
-        <p>...</p>
-    </details>
-    <details>
-        <summary>
-            <b>Claude</b>
-            <input type="checkbox" role="switch" class="mx-5">
-        </summary>
-        <p>...</p>
-    </details>
-    <details>
-        <summary>
-            <b>Gemini</b>
-            <input type="checkbox" role="switch" class="mx-5">
-        </summary>
-        <p>...</p>
-    </details>
+<details @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
+        <b>Microsoft Azure</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="name" value="Azure">
+            <input type="hidden" name="type" value="Azure">
+        </label>
+        <label>
+            API Key
+            <input name="apikey" placeholder="" required>
+        </label>
+        <label>
+            API 代理地址
+            <input type="url" name="apiurl" placeholder="https://api.openai.com/v1"/>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
+
+<details @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
+        <b>Ollama</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="name" value="Ollama">
+            <input type="hidden" name="type" value="Ollama">
+        </label>
+        <label>
+            API Key
+            <input name="apikey" placeholder="" required>
+        </label>
+        <label>
+            API 代理地址
+            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
+
+<details @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
+        <b>Anthropic Claude</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="name" value="Claude">
+            <input type="hidden" name="type" value="Claude">
+        </label>
+        <label>
+            API Key
+            <input name="apikey" placeholder="" required>
+        </label>
+        <label>
+            API 代理地址
+            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
+
+<details @submit.prevent="updateModel" class="w-half py-3">
+    <summary>
+        <b>Google Gemini</b>
+    </summary>
+    <form>
+        <label class="py-3">
+            启用
+            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
+            <input type="hidden" name="name" value="Gemini">
+            <input type="hidden" name="type" value="Gemini">
+        </label>
+        <label>
+            API Key
+            <input name="apikey" placeholder="" required>
+        </label>
+        <label>
+            API 代理地址
+            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
+        </label>
+        <label>
+            模型列表
+            <textarea name="list"></textarea>
+        </label>
+        <button type="submit">保存并检查</button>
+    </form>
+</details>
+
+
 
 

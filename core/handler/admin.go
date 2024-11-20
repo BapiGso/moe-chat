@@ -8,7 +8,7 @@ import (
 func Admin(c echo.Context) error {
 	switch c.Request().Method {
 	case http.MethodGet:
-		return c.Render(http.StatusOK, "admin_header.html", nil)
+		return c.Render(http.StatusOK, "admin.html", nil)
 	}
 	return echo.ErrMethodNotAllowed
 

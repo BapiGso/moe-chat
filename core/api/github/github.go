@@ -1,14 +1,10 @@
-package openai
+package github
 
 import (
 	"context"
 	"fmt"
 	"github.com/sashabaranov/go-openai"
 )
-
-func init() {
-	//example()
-}
 
 func example() {
 	config := openai.DefaultAzureConfig("xai-InoKzUTRlinbYo2QzRSpBzdh9eOzowv86XgT5hmqn14vXqdyMvuMBJN0x29MyE1KeLuLbZivdlPuWPt6", "https://api.x.ai/v1/chat/completions")
@@ -33,30 +29,6 @@ func example() {
 			},
 		},
 	)
-	if err != nil {
-		fmt.Printf("ChatCompletion error: %v\n", err)
-		return
-	}
-
-	fmt.Println(resp.Choices[0].Message.Content)
-}
-
-func example2() {
-
-	client := openai.NewClient("sk-Ho9hOFUHszHcItvsb1200AHQExqAqnvOuJXNW9xHGLmSddLn")
-	resp, err := client.CreateChatCompletion(
-		context.Background(),
-		openai.ChatCompletionRequest{
-			Model: openai.GPT4oMini,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: "Hello!",
-				},
-			},
-		},
-	)
-
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
 		return

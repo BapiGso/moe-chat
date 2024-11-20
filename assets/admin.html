@@ -65,13 +65,13 @@
             <li class="py-4 list-none" @click="menuActive='database'">数据库</li>
         </ul>
     </nav>
-    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='user'">
+    <section class="flex-col w-full p-5" x-init="devFetch($el)" x-show="menuActive==='user'">
         {{template "admin_user.html"}}
     </section>
-    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='model'">
+    <section class="flex-col w-full align-center p-5" x-init="devFetch($el)" x-show="menuActive==='model'">
         {{template "admin_model.html"}}<
     </section>
-    <section class="flex-col w-full justify-center p-5" x-init="devFetch($el)" x-show="menuActive==='database'">
+    <section class="flex-col w-full align-center p-5" x-init="devFetch($el)" x-show="menuActive==='database'">
         {{template "admin_database.html"}}
     </section>
 </body>
@@ -85,6 +85,28 @@
                     el.innerHTML= await (await fetch(xText.split('"')[1])).text()
                 }
             },
+            async updateUser(email, level){
+                let res = await fetch(`/admin/user`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: email,
+                        level: level
+                    })});
+                res.ok && location.reload();
+            },
+            async deleteUser(email,rowElement){
+                if (confirm("Are you sure you want to delete this user?")) {
+                    let res = await fetch(`/admin/user?email=${email}`, { method: 'DELETE' });
+                    res.ok && rowElement.remove();
+                }
+            },
+            async updateModel(event){
+                let res = await fetch(`/admin/model`, {
+                    method: 'PUT',
+                    body: new FormData(event.target)
+                });
+            }
         }))
     })
 </script>
