@@ -1,155 +1,30 @@
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>OpenAI</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="OpenAI">
-        </label>
-        <label>
-            API Key
-            <input name="apikey" placeholder="" required>
-        </label>
-        <label>
-            API 代理地址
-            <input type="url" name="apiurl" placeholder="https://api.openai.com/v1" required>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>
+<template x-for="m in ['OpenAI', 'Azure', 'GitHub', 'Ollama', 'Claude', 'Gemini']">
+    <details @submit.prevent="updateModel" class="w-half py-3">
+        <summary>
+            <img class="px-3" :src=`https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${m.toLowerCase()}.svg`>
+            <b x-text="m"></b>
+        </summary>
+        <form>
+            <input type="hidden" name="type" :value="m">
+            <label class="py-3">
+                启用
+                <input type="checkbox" class="mx-5" role="switch" name="active" :value="models[m]?.Active" :checked="models[m]?.Active" @change="$el.value=Number($el.checked)">
+            </label>
+            <label>
+                API Key
+                <input name="apikey" :value="models[m]?.APIKey" required>
+            </label>
+            <label>
+                API 代理地址
+                <input type="url" name="apiurl" :value="models[m]?.APIUrl" :placeholder="models.APIUrlPlaceholder[m]" required>
+            </label>
+            <label>
+                模型列表
+                <textarea name="list" :value="models[m]?.List"></textarea>
+            </label>
+            <button type="submit">保存并检查</button>
+        </form>
+    </details>
+</template>
 
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>Microsoft Azure</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="Azure">
-        </label>
-        <label>
-            API Key
-            <input name="apikey" placeholder="" required>
-        </label>
-        <label>
-            API 代理地址
-            <input type="url" name="apiurl" placeholder="https://api.openai.com/v1"/>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>
 
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>GitHub Model</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="GitHub">
-        </label>
-        <label>
-            Github PAT
-            <input name="apikey" placeholder="ghp_xxx" required>
-        </label>
-        <label>
-<!--            API 代理地址-->
-            <input type="hidden" name="apiurl" value="https://models.inference.ai.azure.com/"/>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>
-
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>Ollama</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="Ollama">
-        </label>
-        <label>
-            API Key
-            <input name="apikey" placeholder="" required>
-        </label>
-        <label>
-            API 代理地址
-            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>
-
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>Anthropic Claude</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="Claude">
-        </label>
-        <label>
-            API Key
-            <input name="apikey" placeholder="" required>
-        </label>
-        <label>
-            API 代理地址
-            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>
-
-<details @submit.prevent="updateModel" class="w-half py-3">
-    <summary>
-        <b>Google Gemini</b>
-    </summary>
-    <form>
-        <label class="py-3">
-            启用
-            <input type="checkbox" class="mx-5" role="switch" name="active" x-init="$el.value=Number($el.checked)"  @change="$el.value=Number($el.checked)">
-            <input type="hidden" name="type" value="Gemini">
-        </label>
-        <label>
-            API Key
-            <input name="apikey" placeholder="" required>
-        </label>
-        <label>
-            API 代理地址
-            <input type="url" name="apiurl" placeholder="https://127.0.0.1:11434"/>
-        </label>
-        <label>
-            模型列表
-            <textarea name="list"></textarea>
-        </label>
-        <button type="submit">保存并检查</button>
-    </form>
-</details>

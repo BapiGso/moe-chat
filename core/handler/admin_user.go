@@ -8,8 +8,8 @@ import (
 
 func AdminUser(c echo.Context) error {
 	req := &struct {
-		Email string `query:"email" json:"email" `
-		Level string `query:"level" json:"level" `
+		Email string `form:"email" json:"email" `
+		Level string `form:"level" json:"level" `
 	}{}
 	if err := c.Bind(req); err != nil {
 		return err

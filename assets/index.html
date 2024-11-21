@@ -59,6 +59,9 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('moechat', () => ({
+            async init() {
+                this.chatForm.messages = await (await fetch('',{method:'POST'})).json().Chat
+            },
             async devFetch(el){
                 let xText=el.innerText
                 if (xText.includes('{') && xText.includes('}')) {
@@ -67,7 +70,6 @@
             },
             menuShow:true,
             chatSettingShow:false,
-            activeMenu:"",
             logoList:{
                 align:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-align-left'%3E%3Cpath d='M17 10H3M21 6H3M21 14H3M17 18H3'/%3E%3C/svg%3E",
                 slider:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='-6 -4 30 30' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-sliders'%3E%3Cpath d='M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6'/%3E%3C/svg%3E",
@@ -76,6 +78,22 @@
                 mic:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='-6 -4 30 30' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-mic'%3E%3Cpath d='M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z'/%3E%3Cpath d='M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8'/%3E%3C/svg%3E",
                 audio:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-headphones'%3E%3Cpath d='M3 18v-6a9 9 0 0 1 18 0v6'/%3E%3Cpath d='M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z'/%3E%3C/svg%3E",
                 edit:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='-4 -2 30 30' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-edit'%3E%3Cpath d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'/%3E%3Cpath d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z'/%3E%3C/svg%3E"
+            },
+            chatForm: {
+                model: "",
+                messages: {}
+            },
+            async postCompletion(){
+                const formData = new FormData();for (const key in this.chatForm) {formData.append(key, this.chatForm[key]);}
+                const response = await fetch(`/chat/completion`, {method: 'POST', body: formData});
+                const reader = response.body.getReader();
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done)break;
+                    const decodedChunk = new TextDecoder("utf-8").decode(value, { stream: true });
+                    console.log('Received chunk:', decodedChunk);
+                }
+
             }
         }))
     })

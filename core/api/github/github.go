@@ -13,8 +13,9 @@ func (g *GitHub) Ping() {
 
 }
 
-func (g *GitHub) GetModelList() {
+func (g *GitHub) GetModelList() []string {
 
+	return []string{"gpt-4o-mini", "gpt-4o"}
 }
 
 func example() {
@@ -31,7 +32,7 @@ func example() {
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: "grok-beta",
+			Model: openai.GPT4o,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,

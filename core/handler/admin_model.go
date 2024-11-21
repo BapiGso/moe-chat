@@ -27,17 +27,21 @@ func AdminModel(c echo.Context) error {
 		if err != nil {
 			return err
 		}
-		return c.JSON(http.StatusOK, models)
+		// 将模型数组转换为对象
+		modelMap := make(map[string]database.Model)
+		for _, model := range models {
+			modelMap[model.Type] = model
+		}
+		return c.JSON(http.StatusOK, modelMap)
 	case http.MethodPut:
 		req.CreatedAt = int(time.Now().Unix())
-		exec, err := database.DB.NamedExec(`INSERT OR REPLACE INTO model ( type, api_url, api_key, active, list, created_at)
+		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO model ( type, api_url, api_key, active, list, created_at)
 VALUES ( :type, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
 		if err != nil {
 			return err
 		}
 		a := api.New(req.Type)
-		a.GetModelList()
-		return c.JSON(http.StatusOK, exec)
+		return c.JSON(http.StatusOK, a.GetModelList())
 	case http.MethodDelete:
 
 	case http.MethodGet:

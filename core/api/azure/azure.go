@@ -7,6 +7,6 @@ func (g *Azure) Ping() {
 
 }
 
-func (g *Azure) GetModelList() {
-
+func (g *Azure) GetModelList() []string {
+	return nil
 }

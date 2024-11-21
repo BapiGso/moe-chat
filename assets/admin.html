@@ -78,6 +78,10 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('moechat', () => ({
+            async init() {
+                const newModels = await (await fetch('/admin/model',{method:'POST'})).json()
+                this.models = Object.assign({}, this.models, newModels);
+            },
             menuActive:"model",
             async devFetch(el){
                 let xText=el.innerText
@@ -86,13 +90,10 @@
                 }
             },
             async updateUser(email, level){
-                let res = await fetch(`/admin/user`, {
-                    method: 'PUT',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        email: email,
-                        level: level
-                    })});
+                let formData = new FormData();
+                formData.append('email', email);
+                formData.append('level', level);
+                let res = await fetch(`/admin/user`, {method: 'PUT', body: formData});
                 res.ok && location.reload();
             },
             async deleteUser(email,rowElement){
@@ -101,11 +102,24 @@
                     res.ok && rowElement.remove();
                 }
             },
+            models: {
+                APIUrlPlaceholder:{
+                    "OpenAI": "https://api.openai.com/v1",
+                    "Azure": "https://docs-test-001.openai.azure.com",
+                    "GitHub": "https://models.inference.ai.azure.com",
+                    "Ollama": "http://127.0.0.1:11434",
+                    "Claude": "https://api.anthropic.com",
+                    "Gemini": "https://generativelanguage.googleapis.com"
+                }
+            },
             async updateModel(event){
-                let res = await fetch(`/admin/model`, {
-                    method: 'PUT',
-                    body: new FormData(event.target)
-                });
+                let res = await fetch(`/admin/model`, {method: 'PUT', body: new FormData(event.target)});
+                if (res.ok) {
+                    let data = await res.json();  // 解析返回的 JSON 数据
+                    event.target.list.value = data.join(',');
+                } else {
+                    console.error('Failed to update model:', res.statusText);
+                }
             }
         }))
     })

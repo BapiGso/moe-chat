@@ -36,9 +36,13 @@ func (c *Core) Route() {
 
 	//c.e.Any("/", handler.Login, middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(3)))
 	c.e.Any("/chat", handler.Chat)
+	c.e.Any("/chat/:UUID", handler.Chat)
+	c.e.Any("/chat/completion", handler.Completion)
 	c.e.Any("/model", handler.Model)
+	c.e.Any("/login", handler.Login)
 	admin := c.e.Group("/admin")
 	admin.Any("", handler.Admin)
+
 	admin.Any("/user", handler.AdminUser)
 	admin.Any("/model", handler.AdminModel)
 	admin.Any("/database", handler.AdminDatabase)

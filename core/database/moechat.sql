@@ -1,13 +1,13 @@
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "chat" (
 	"id"	VARCHAR(255) NOT NULL,
-	"user_id"	VARCHAR(255) NOT NULL,
+	"email"	VARCHAR(255) NOT NULL,
 	"title"	TEXT NOT NULL,
 	"share_id"	VARCHAR(255) NOT NULL,
 	"archived"	INTEGER NOT NULL,
 	"created_at"	DATETIME NOT NULL,
 	"updated_at"	DATETIME NOT NULL,
-	"chat"	JSON NOT NULL,
+	"messages"	JSON NOT NULL,
 	"pinned"	BOOLEAN NOT NULL DEFAULT false,
 	"meta"	JSON NOT NULL DEFAULT '{}',
 	"folder_id"	TEXT NOT NULL
@@ -157,12 +157,6 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "setting" (
     "key" VARCHAR(255) NOT NULL,
     "value" TEXT NOT NULL
-);
-CREATE UNIQUE INDEX IF NOT EXISTS "chat_id" ON "chat" (
-	"id"
-);
-CREATE UNIQUE INDEX IF NOT EXISTS "chat_share_id" ON "chat" (
-	"share_id"
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "chatidtag_id" ON "chatidtag" (
 	"id"

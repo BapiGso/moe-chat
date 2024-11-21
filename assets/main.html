@@ -1,12 +1,16 @@
 <header class="h-14 flex-row align-center justify-between px-3">
     <div class="flex-row align-center">
         <img class="logo mx-2" :src="logoList.align" @click="menuShow=true" x-show="!menuShow">
-        <details class="dropdown mx-2" >
-            <summary>gpt-4o-mini</summary>
-            <ul>
-                <li><a href="#">Solid</a></li>
-            </ul>
-        </details>
+<!--        todo select二级菜单-->
+        <select class="mx-2 my-0" aria-label x-model="chatForm.model">
+            <template x-for="m in await (await fetch('/model',{method:'POST'})).json()">
+                <optgroup :label="m.Type" label="">
+                    <template x-for="n in m?.List?.split(',')">
+                        <option value="1" x-text="n"></option>
+                    </template>
+                </optgroup>
+            </template>
+        </select>
     </div>
     <div>
         <img class="logo" :src="logoList.more">
@@ -18,7 +22,7 @@
 </header>
 
 <article class="flex-col flex-10">
-    <template x-for="x in (await (await fetch(``,{method:'POST'})).json())">
+    <template x-for="m in chatForm.messages">
         <section class="flex-row px-3 py-4 justify-end">
             昨天的明天是什么时候
         </section>
@@ -33,15 +37,16 @@
             </div>
         </section>
     </template>
-
 </article>
+
 <footer class="flex-1 px-3 flex-col justify-center">
-    <section class="flex-row align-center p-2">
+    <form class="flex-row align-center p-2" @submit.prevent="">
         <img class="logo" :src="logoList.add">
         <img  class="logo" :src="logoList.slider" @click="chatSettingShow=true">
-        <textarea class="m-0 mx-3 resize-none" rows="1" ></textarea>
+        <textarea class="m-0 mx-3 resize-none" rows="1"></textarea>
         <img class="logo" :src="logoList.mic">
-    </section>
+        <button @click="postCompletion">sse</button>
+    </form>
 </footer>
 
 <dialog :open="chatSettingShow">
