@@ -19,7 +19,7 @@ func Chat(c echo.Context) error {
 	switch c.Request().Method {
 	case http.MethodPost:
 		if req.UUID == "" {
-			return c.JSON(http.StatusOK, nil)
+			return c.JSON(http.StatusOK, []struct{}{})
 		}
 		var chats []database.Chat
 		if err := database.DB.Select(&chats, "SELECT * FROM chat WHERE id = ? ", req.UUID); err != nil {

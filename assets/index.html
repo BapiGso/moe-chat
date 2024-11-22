@@ -5,6 +5,7 @@
     <title>MoeChat</title>
     <link rel="icon" type="image/jpg" href="/assets/img/favicon.jpg" />
     <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
+    <script type="text/javascript" src="/assets/js/XhrSource.js" defer></script>
     <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
     <style>
@@ -59,9 +60,9 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('moechat', () => ({
-            async init() {
-                this.chatForm.messages = await (await fetch('',{method:'POST'})).json().Chat
-            },
+            // async init() {
+            //     this.chatForm.messages = await (await fetch('',{method:'POST'})).json().Chat
+            // },
             async devFetch(el){
                 let xText=el.innerText
                 if (xText.includes('{') && xText.includes('}')) {
@@ -81,18 +82,36 @@
             },
             chatForm: {
                 model: "",
-                messages: {}
+                messages: [],
             },
             async postCompletion(){
+                console.log(this.chatForm);
+                this.chatForm.messages.push({
+                    key: 123,
+                    content: "",
+                    role: "system"
+                });
+
                 const formData = new FormData();for (const key in this.chatForm) {formData.append(key, this.chatForm[key]);}
-                const response = await fetch(`/chat/completion`, {method: 'POST', body: formData});
-                const reader = response.body.getReader();
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done)break;
-                    const decodedChunk = new TextDecoder("utf-8").decode(value, { stream: true });
-                    console.log('Received chunk:', decodedChunk);
-                }
+                const xs = XhrSource('/chat/completion', {
+                    method: 'POST',
+                    body: formData
+                });
+                xs.addEventListener('open', () => {
+                    this.chatForm.messages.push({
+                        key: 123,
+                        content: "",
+                        role: "system"
+                    });
+                });
+                xs.addEventListener('message', e => {
+                    // 获取当前messages中的最后一条消息
+                    const lastMessage = this.chatForm.messages[this.chatForm.messages.length - 1];
+                    // 将接收到的数据追加到最后一条消息的content中
+                    if (lastMessage && lastMessage.role === "system") {
+                        lastMessage.content += e.data;
+                    }
+                });
 
             }
         }))

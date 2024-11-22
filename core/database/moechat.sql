@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "chat" (
-	"id"	VARCHAR(255) NOT NULL,
+	"id"	VARCHAR(255) NOT NULL  PRIMARY KEY,
 	"email"	VARCHAR(255) NOT NULL,
 	"title"	TEXT NOT NULL,
 	"share_id"	VARCHAR(255) NOT NULL,
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS "tool" (
 	"valves"	TEXT
 );
 CREATE TABLE IF NOT EXISTS "user" (
-    "email" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(255) NOT NULL PRIMARY KEY,
     "password" BLOB NOT NULL,  -- 使用 BLOB 类型存储密码的二进制数据
     "level" TEXT NOT NULL,   -- 用户级别
     "profile_image_url" TEXT NOT NULL,

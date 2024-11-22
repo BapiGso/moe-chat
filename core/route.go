@@ -8,6 +8,7 @@ import (
 	"moechat/core/mymiddleware"
 	"net"
 	"net/http"
+	"time"
 )
 
 func (c *Core) Route() {
@@ -27,7 +28,23 @@ func (c *Core) Route() {
 		},
 		Filesystem: http.FS(c.assetsFS),
 	}))
-
+	c.e.GET("/chunked", func(c echo.Context) error {
+		w := c.Response()
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+		ticker := time.NewTicker(1 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-c.Request().Context().Done():
+				return nil
+			case <-ticker.C:
+				fmt.Fprintf(w, "%v\n\n", time.Now().Format(time.RFC3339Nano))
+				w.Flush()
+			}
+		}
+	})
 	//用于PWA的路径重写
 	c.e.Pre(middleware.Rewrite(map[string]string{
 		"/manifest.webmanifest": "/assets/manifest.webmanifest",
