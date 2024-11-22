@@ -1,7 +1,7 @@
 package database
 
 type Model struct {
-	Type      string `db:"type"`
+	Provider  string `db:"provider"`
 	APIUrl    string `db:"api_url"`
 	APIKey    string `db:"api_key"`
 	Active    int    `db:"active"`

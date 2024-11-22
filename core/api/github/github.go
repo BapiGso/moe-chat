@@ -1,29 +1,51 @@
 package github
 
 import (
-	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/labstack/echo/v4"
 	"github.com/sashabaranov/go-openai"
 	"io"
+	"moechat/core/database"
 )
 
-type GitHub struct {
-	stream *openai.ChatCompletionStream
+type Client struct {
+	resStream *openai.ChatCompletionStream
 }
 
-func (g *GitHub) Ping() {
+func (g *Client) Ping() {
 
 }
 
-func (g *GitHub) GetModelList() []string {
+func (g *Client) GetModelList() []string {
 
 	return []string{"gpt-4o-mini", "gpt-4o"}
 }
 
-func (r *GitHub) Read(p []byte) (n int, err error) {
+func (g *Client) CreateResSteam(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+	openAIMessages, err := transformToProviderMessages(msgs)
+	if err != nil {
+		return err
+	}
+	request := openai.ChatCompletionRequest{
+		Model:    baseModel,
+		Messages: openAIMessages,
+		Stream:   true,
+	}
+	var model database.Model
+
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'GitHub'`); err != nil {
+		return err
+	}
+	client := openai.NewClientWithConfig(openai.DefaultAzureConfig(model.APIKey, model.APIUrl))
+	g.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)
+	return err
+}
+
+func (g *Client) ReadResSteam(p []byte) (n int, err error) {
 	// receive new response from the stream
-	response, err := r.stream.Recv()
+	response, err := g.resStream.Recv()
 	if err != nil {
 		if errors.Is(err, io.EOF) {
 			return 0, io.EOF
@@ -34,37 +56,4 @@ func (r *GitHub) Read(p []byte) (n int, err error) {
 	// Copy the content directly to the provided buffer
 	n = copy(p, response.Choices[0].Delta.Content)
 	return n, nil
-}
-
-func (g *GitHub) Test() *openai.ChatCompletionStream {
-	ctx := context.Background()
-	req := openai.ChatCompletionRequest{
-		Model: openai.GPT4o,
-		Messages: []openai.ChatCompletionMessage{
-			{
-				Role:    openai.ChatMessageRoleUser,
-				Content: "Hello Azure OpenAI!",
-			},
-		},
-		Stream: true,
-	}
-	client := openai.NewClientWithConfig(openai.DefaultAzureConfig("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", "https://models.inference.ai.azure.com"))
-	stream, err := client.CreateChatCompletionStream(ctx, req)
-
-	if err != nil {
-	}
-	defer stream.Close()
-
-	for {
-		response, err := stream.Recv()
-		if errors.Is(err, io.EOF) {
-			fmt.Println("\nStream finished")
-		}
-		if err != nil {
-			fmt.Printf("\nStream error: %v\n", err)
-
-		}
-		fmt.Printf(response.Choices[0].Delta.Content)
-	}
-	return nil
 }

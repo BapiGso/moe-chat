@@ -15,6 +15,7 @@ func example() {
 			anthropic.NewUserTextMessage("What is your name?"),
 		},
 		MaxTokens: 1000,
+		Stream:    true,
 	})
 	if err != nil {
 		var e *anthropic.APIError

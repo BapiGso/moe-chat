@@ -1,12 +1,12 @@
 package azure
 
-type Azure struct {
+type Client struct {
 }
 
-func (g *Azure) Ping() {
+func (c *Client) Ping() {
 
 }
 
-func (g *Azure) GetModelList() []string {
+func (c *Client) GetModelList() []string {
 	return nil
 }

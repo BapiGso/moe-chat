@@ -58,7 +58,7 @@ func Login(c echo.Context) error {
 			if err := bcrypt.CompareHashAndPassword(user.Password, []byte(req.Pwd)); err == nil {
 				token, err := jwt.NewWithClaims(jwt.SigningMethodHS256,
 					&jwt.RegisteredClaims{
-						Subject:   user.Level,
+						Subject:   user.Email,
 						ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)), //过期日期设置7天
 
 					},

@@ -5,7 +5,7 @@
             <b x-text="m"></b>
         </summary>
         <form>
-            <input type="hidden" name="type" :value="m">
+            <input type="hidden" name="provider" :value="m">
             <label class="py-3">
                 启用
                 <input type="checkbox" class="mx-5" role="switch" name="active" :value="models[m]?.Active" :checked="models[m]?.Active" @change="$el.value=Number($el.checked)">

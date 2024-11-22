@@ -12,6 +12,16 @@
     flex-direction: column;
 }
 
+.flex-row-reverse {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.flex-col-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .flex-wrap {
     display: flex;
     flex-wrap: wrap;
@@ -484,4 +494,20 @@
     /*background-color: #e3e3e366;*/
     /*transform: scale(1.1);*/
     cursor: pointer;
+}
+
+.text-c9e0ed {
+    color: #c9e0ed;
+}
+
+.bg-c9e0ed {
+    background-color: #c9e0ed95;
+}
+
+.text-ded4ed {
+    color: #ded4ed;
+}
+
+.bg-ded4ed {
+    background-color: #ded4ed95;
 }

@@ -1,25 +1,31 @@
 package api
 
 import (
-	"moechat/core/api/azure"
+	"encoding/json"
+	"github.com/labstack/echo/v4"
 	"moechat/core/api/github"
-	"moechat/core/api/openai"
 )
 
 type Adapter interface {
 	GetModelList() []string
 	Ping()
+	ReadResSteam(p []byte) (n int, err error)
+	CreateResSteam(ctx echo.Context, baseModel string, message json.RawMessage) error
+	//FromProviderFormat(providerMsg interface{}) ([]UnifiedMessage, error)
 }
 
-func New(AiType string) Adapter {
-	switch AiType {
-	case "azure":
-		return Adapter(new(azure.Azure))
+func New(provider string) Adapter {
+	switch provider {
+	case "Azure":
+	//return new(azure.Client)
+	case "Claude":
+		//return new(claude.Client)
 	case "GitHub":
-		return Adapter(new(github.GitHub))
+		return new(github.Client)
 	case "OpenAI":
-		return Adapter(new(openai.Openai))
-	default:
-		return nil
+		//return new(openai.Openai)
 	}
+	return nil
 }
+
+// UnifiedMessage 统一的消息格式，用于内部处理

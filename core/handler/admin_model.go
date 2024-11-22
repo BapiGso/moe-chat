@@ -10,7 +10,7 @@ import (
 
 func AdminModel(c echo.Context) error {
 	req := &struct {
-		Type      string `form:"type" json:"type" db:"type"`
+		Provider  string `form:"provider" json:"provider" db:"provider"`
 		APIUrl    string `form:"apiurl" json:"apiurl" db:"api_url"`
 		APIKey    string `form:"apikey" json:"apikey" db:"api_key"`
 		Active    int    `form:"active" json:"active" db:"active"`
@@ -30,17 +30,18 @@ func AdminModel(c echo.Context) error {
 		// 将模型数组转换为对象
 		modelMap := make(map[string]database.Model)
 		for _, model := range models {
-			modelMap[model.Type] = model
+			modelMap[model.Provider] = model
 		}
 		return c.JSON(http.StatusOK, modelMap)
 	case http.MethodPut:
 		req.CreatedAt = int(time.Now().Unix())
-		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO model ( type, api_url, api_key, active, list, created_at)
-VALUES ( :type, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
+		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO 
+    		model (provider, api_url, api_key, active, list, created_at)
+			VALUES ( :provider, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
 		if err != nil {
 			return err
 		}
-		a := api.New(req.Type)
+		a := api.New(req.Provider)
 		return c.JSON(http.StatusOK, a.GetModelList())
 	case http.MethodDelete:
 
