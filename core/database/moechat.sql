@@ -51,16 +51,23 @@ CREATE TABLE IF NOT EXISTS "feedback" (
 	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "file" (
-	"id"	TEXT NOT NULL,
-	"user_id"	TEXT NOT NULL,
-	"filename"	TEXT NOT NULL,
-	"meta"	JSON NOT NULL,
-	"created_at"	INTEGER NOT NULL,
-	"hash"	TEXT NOT NULL,
-	"data"	JSON NOT NULL,
-	"updated_at"	BIGINT NOT NULL,
-	"path"	TEXT NOT NULL
+    "hash" TEXT PRIMARY KEY,
+    "email" TEXT NOT NULL,
+    "filename" TEXT NOT NULL,
+    "mime_type" TEXT NOT NULL,
+    "data" TEXT NOT NULL,
+    "created_at" INTEGER NOT NULL,
+    "updated_at" INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS "file" (
+        hash TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        filename TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        data BLOB NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+    );
 CREATE TABLE IF NOT EXISTS "folder" (
 	"id"	TEXT NOT NULL,
 	"parent_id"	TEXT NOT NULL,
@@ -166,9 +173,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS "document_collection_name" ON "document" (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "document_name" ON "document" (
 	"name"
-);
-CREATE UNIQUE INDEX IF NOT EXISTS "file_id" ON "file" (
-	"id"
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "function_id" ON "function" (
 	"id"

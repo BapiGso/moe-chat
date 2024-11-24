@@ -6,7 +6,7 @@
     <table>
         <thead>
         <tr>
-            <td>头像</td>
+            <td>avatar</td>
             <td>level</td>
             <td>email</td>
             <td>最后在线时间</td>
@@ -17,7 +17,12 @@
         <tbody>
         <template x-for="m in (await (await fetch(`/admin/user`,{method:'POST'})).json())">
             <tr>
-                <td><img :src="m.ProfileImageURL || '/assets/img/default-avatar.png'" alt="Avatar" class="w-8 h-8 rounded-full"></td>
+                <td>
+                    <picture >
+                        <source :srcset="m.ProfileImageURL" class="w-8 h-8 rounded-full">
+                        <img src="/assets/img/default-avatar.png" class="w-8 h-8 rounded-full">
+                    </picture>
+                </td>
                 <td>
                     <select class="m-0" @change="updateUser(m.Email, $el.value)" aria-label>
                         <option value="pending" :selected="m.Level === 'pending'">pending</option>

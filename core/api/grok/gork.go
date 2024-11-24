@@ -1,4 +1,4 @@
-package github
+package grok
 
 import (
 	"encoding/json"
@@ -20,41 +20,41 @@ func (c *Client) Ping() {
 }
 
 func (c *Client) GetModelList() []string {
+	var model database.Model
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'Grok' AND active = 1`); err != nil {
+		return nil
+	}
 	client := resty.New()
 
-	var response []struct {
-		Id            string   `json:"id"`
-		Name          string   `json:"name"`
-		FriendlyName  string   `json:"friendly_name"`
-		ModelVersion  int      `json:"model_version"`
-		Publisher     string   `json:"publisher"`
-		ModelFamily   string   `json:"model_family"`
-		ModelRegistry string   `json:"model_registry"`
-		License       string   `json:"license"`
-		Task          string   `json:"task"`
-		Description   string   `json:"description"`
-		Summary       string   `json:"summary"`
-		Tags          []string `json:"tags"`
+	var response struct {
+		Data []struct {
+			ID      string `json:"id"`
+			Created int64  `json:"created"`
+			Object  string `json:"object"`
+			OwnedBy string `json:"owned_by"`
+		} `json:"data"`
+		Object string `json:"object"`
 	}
 	// 发送 GET 请求
 	_, err := client.R().
 		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", "Bearer "+model.APIKey).
 		SetResult(&response).
-		Get("https://models.inference.ai.azure.com/models")
+		Get("https://api.x.ai/v1/models")
 	if err != nil {
 		return nil
 	}
 	// 提取 id 字段到 []string 切片
 	var ids []string
-	for _, model := range response {
-		ids = append(ids, model.Name)
+	for _, model := range response.Data {
+		ids = append(ids, model.ID)
 	}
 	return ids
 }
 
 func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
 	var model database.Model
-	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'GitHub' AND active = 1`); err != nil {
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'Grok'`); err != nil {
 		return err
 	}
 	config := openai.DefaultConfig(model.APIKey)
@@ -69,7 +69,6 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.R
 		Messages: openAIMessages,
 		Stream:   true,
 	}
-
 	c.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)
 	return err
 }

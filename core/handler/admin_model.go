@@ -35,17 +35,19 @@ func AdminModel(c echo.Context) error {
 		return c.JSON(http.StatusOK, modelMap)
 	case http.MethodPut:
 		req.CreatedAt = int(time.Now().Unix())
-		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO 
+		result, err := database.DB.NamedExec(`INSERT OR REPLACE INTO 
     		model (provider, api_url, api_key, active, list, created_at)
 			VALUES ( :provider, :api_url, :api_key, :active, :list, :created_at)`, database.Model(*req))
 		if err != nil {
 			return err
 		}
-		a := api.New(req.Provider)
-		return c.JSON(http.StatusOK, a.GetModelList())
+		return c.JSON(http.StatusOK, result)
 	case http.MethodDelete:
-
 	case http.MethodGet:
+	case http.MethodOptions:
+		a := api.New(req.Provider)
+		modelList := a.GetModelList()
+		return c.JSON(http.StatusOK, modelList)
 	}
 	return echo.ErrMethodNotAllowed
 }

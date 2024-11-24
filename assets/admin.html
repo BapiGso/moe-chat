@@ -33,22 +33,9 @@
             padding: 0;
             height: 100vh;
         }
-
-        aside {
-            background-color: rgba(66, 54, 235, 0.2);
-
-        }
-
-        main {
-            & header{
-                & details{
-                    margin-bottom: 0;
-                }
-            }
-        }
     </style>
 </head>
-<body class="flex-col w-screen align-center">
+<body class="flex-col w-full align-center">
     <nav class="p-5 w-full">
         <ul>
             <li><strong>Moe Chat</strong></li>
@@ -107,16 +94,24 @@
                     "OpenAI": "https://api.openai.com/v1",
                     "Azure": "https://docs-test-001.openai.azure.com",
                     "GitHub": "https://models.inference.ai.azure.com",
-                    "Ollama": "http://127.0.0.1:11434",
+                    "Ollama": "http://localhost:11434/v1/chat/completions",
                     "Claude": "https://api.anthropic.com",
-                    "Gemini": "https://generativelanguage.googleapis.com"
+                    "Gemini": "https://generativelanguage.googleapis.com",
+                    "Grok"  : "https://api.x.ai/v1"
                 }
             },
             async updateModel(event){
-                let res = await fetch(`/admin/model`, {method: 'PUT', body: new FormData(event.target)});
+                event.target.setAttribute('aria-busy', 'true');
+                let res = await (await fetch(`/admin/model`, {method: 'PUT', body: new FormData(event.target.form)})).json()
+                event.target.removeAttribute('aria-busy');
+            },
+            async optionsModel(event){
+                event.target.setAttribute('aria-busy', 'true');
+                let res = await fetch(`/admin/model`, {method: 'OPTIONS', body: new FormData(event.target.form)});
                 if (res.ok) {
                     let data = await res.json();  // 解析返回的 JSON 数据
-                    event.target.list.value = data.join(',');
+                    event.target.form.list.value = data.join(',');
+                    event.target.removeAttribute('aria-busy');
                 } else {
                     console.error('Failed to update model:', res.statusText);
                 }

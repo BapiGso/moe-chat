@@ -12,7 +12,7 @@ import (
 )
 
 // Chat get返回静态页面，post返回某个UUID对应的历史会话，put更新某个UUID的历史会话
-func Chat(c echo.Context) error {
+func Chats(c echo.Context) error {
 	req := &struct {
 		ID        uuid.UUID `param:"id" json:"id"`
 		Email     string
@@ -31,28 +31,15 @@ func Chat(c echo.Context) error {
 	}
 	switch c.Request().Method {
 	case http.MethodPost:
-		if req.ID == uuid.Nil {
-			return c.JSON(http.StatusOK, database.Chat{ID: uuid.New(), Messages: json.RawMessage("[]")})
-		}
-		var chat database.Chat
-		err := database.DB.Get(&chat,
-			"SELECT * FROM chat WHERE id = ? ", req.ID)
+		var chats []database.Chat
+		err := database.DB.Select(&chats,
+			"SELECT * FROM chat WHERE email = '' ", req.ID)
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return err
 		}
-		return c.JSON(http.StatusOK, chat)
-	case http.MethodPut: //用于更新会话内容
-		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO
-			 chat (id, email, title, share_id, archived, 
-			       created_at, updated_at, messages, folder_id)
-			VALUES (:id, :email, :title, :share_id, :archived, 
-			        :created_at, :updated_at, :messages, :folder_id)`, database.Chat(*req))
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, req)
+		return c.JSON(http.StatusOK, chats)
+	case http.MethodPut: //用于修改会话内容
 	case http.MethodGet:
-		return c.Render(http.StatusOK, "index.html", nil)
 	}
 	return echo.ErrMethodNotAllowed
 }

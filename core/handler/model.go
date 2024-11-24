@@ -10,7 +10,7 @@ func Model(c echo.Context) error {
 	switch c.Request().Method {
 	case http.MethodPost:
 		var models []database.Model
-		err := database.DB.Select(&models, `SELECT provider,list FROM model`)
+		err := database.DB.Select(&models, `SELECT provider,list,active FROM model WHERE active = 1`)
 		if err != nil {
 			return err
 		}

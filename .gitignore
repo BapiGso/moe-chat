@@ -1,3 +1,4 @@
 moechat.db
 openwebui
 /.idea
+core/database/init_addtestdata.go

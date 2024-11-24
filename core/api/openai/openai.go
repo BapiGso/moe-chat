@@ -1,12 +1,55 @@
 package openai
 
-type Openai struct {
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/labstack/echo/v4"
+	"github.com/sashabaranov/go-openai"
+	"io"
+	"moechat/core/database"
+)
+
+type Client struct {
+	resStream *openai.ChatCompletionStream
 }
 
-func (g *Openai) Ping() {
+func (c *Client) Read(p []byte) (n int, err error) {
+	// receive new response from the stream
+	response, err := c.resStream.Recv()
+	if err != nil {
+		if errors.Is(err, io.EOF) {
+			return 0, io.EOF
+		}
+		return 0, fmt.Errorf("stream error: %w", err)
+	}
+
+	// Copy the content directly to the provided buffer
+	n = copy(p, response.Choices[0].Delta.Content)
+	return n, nil
+}
+
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+	var err error
+	var model database.Model
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'OpenAI' AND active = 1`); err != nil {
+		return err
+	}
+	client := openai.NewClient(model.APIKey)
+	openAIMessages, err := transformToProviderMessages(msgs)
+	request := openai.ChatCompletionRequest{
+		Model:    baseModel,
+		Messages: openAIMessages,
+		Stream:   true,
+	}
+	c.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)
+	return err
+}
+
+func (c *Client) Ping() {
 
 }
 
-func (g *Openai) GetModelList() []string {
+func (c *Client) GetModelList() []string {
 	return nil
 }

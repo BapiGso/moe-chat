@@ -37,20 +37,22 @@ func (c *Core) Route() {
 	c.e.Any("/chat", handler.Chat)
 	c.e.Any("/chat/:ID", handler.Chat)
 	c.e.Any("/chat/completion", handler.Completion)
+	c.e.Any("/chats", handler.Chats)
+	c.e.Any("/user", handler.User)
+	c.e.Any("/file", handler.File)
 	c.e.Any("/model", handler.Model)
 	c.e.Any("/login", handler.Login)
-	admin := c.e.Group("/admin")
+	admin := c.e.Group("/admin", mymiddleware.AdminOnlyMiddleware)
 	admin.Any("", handler.Admin)
-
 	admin.Any("/user", handler.AdminUser)
 	admin.Any("/model", handler.AdminModel)
 	admin.Any("/database", handler.AdminDatabase)
-	showPanelAddr()
+	showChatAddr()
 	//c.e.StartTLS(viper.GetString("panel.port"), []byte(certPEM), []byte(keyPEM))
 	c.e.Start(":8080")
 }
 
-func showPanelAddr() {
+func showChatAddr() {
 	// Attempt to show IP address
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {

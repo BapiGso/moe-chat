@@ -1,44 +1,68 @@
 package claude
 
-import "github.com/liushuangls/go-anthropic/v2"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/labstack/echo/v4"
+	"github.com/liushuangls/go-anthropic/v2"
+	"moechat/core/database"
+)
 
 type Client struct {
-	resStream anthropic.MessagesResponse
+	resStream     anthropic.MessagesResponse
+	MessagesEvent chan *string
+}
+
+func (c *Client) GetModelList() []string {
+	return nil
+}
+
+func (c *Client) Read(p []byte) (n int, err error) {
+	select {
+	case response := <-c.MessagesEvent:
+		n = copy(p, *response)
+	}
+	//response := c.resStream.Content
+	return n, nil
+}
+
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+	var model database.Model
+	var err error
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'Claude' AND active = 1`); err != nil {
+		return err
+	}
+	client := anthropic.NewClient(model.APIKey)
+	claudeMessages, err := transformToProviderMessages(msgs)
+	if err != nil {
+		return err
+	}
+	request := anthropic.MessagesRequest{
+		Model:     "claude-3-5-sonnet-20241022",
+		Messages:  claudeMessages,
+		MaxTokens: 1000,
+	}
+	c.resStream, err = client.CreateMessagesStream(ctx.Request().Context(), anthropic.MessagesStreamRequest{
+		MessagesRequest: request,
+		OnContentBlockDelta: func(data anthropic.MessagesEventContentBlockDeltaData) {
+			c.MessagesEvent <- data.Delta.Text
+			//fmt.Printf("Stream Content: %s\n", data.Delta.Text)
+		},
+	})
+	if err != nil {
+		var e *anthropic.APIError
+		if errors.As(err, &e) {
+			fmt.Printf("Messages stream error, type: %s, message: %s", e.Type, e.Message)
+		} else {
+			fmt.Printf("Messages stream error: %v\n", err)
+		}
+		return e
+	}
+	return err
+
 }
 
 func (c *Client) Ping() {
 
 }
-
-func (c *Client) GetModelList() {
-
-}
-
-//func (c *Client) TransformToProviderMessages(msgs []types.UnifiedMessage) (interface{}, error) {
-//	anthropicMsgs := make([]map[string]interface{}, len(msgs))
-//	for i, msg := range msgs {
-//		anthropicMsg := map[string]interface{}{
-//			"role": msg.Role,
-//		}
-//
-//		// 处理多模态内容
-//		if len(msg.MultiContent) > 0 {
-//			content := make([]map[string]interface{}, len(msg.MultiContent))
-//			for j, part := range msg.MultiContent {
-//				content[j] = map[string]interface{}{
-//					"type": part.Type,
-//					"text": part.Text,
-//				}
-//				if part.ImageURL != "" {
-//					content[j]["image_url"] = part.ImageURL
-//				}
-//			}
-//			anthropicMsg["content"] = content
-//		} else {
-//			anthropicMsg["content"] = msg.Content
-//		}
-//
-//		anthropicMsgs[i] = anthropicMsg
-//	}
-//	return anthropicMsgs, nil
-//}

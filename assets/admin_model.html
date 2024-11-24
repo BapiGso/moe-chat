@@ -1,5 +1,5 @@
-<template x-for="m in ['OpenAI', 'Azure', 'GitHub', 'Ollama', 'Claude', 'Gemini']">
-    <details @submit.prevent="updateModel" class="w-half py-3">
+<template x-for="m in ['OpenAI', 'Azure', 'GitHub', 'Ollama', 'Claude', 'Gemini','Grok']">
+    <details class="w-half py-3">
         <summary>
             <img class="px-3" :src=`https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${m.toLowerCase()}.svg`>
             <b x-text="m"></b>
@@ -12,17 +12,20 @@
             </label>
             <label>
                 API Key
-                <input name="apikey" :value="models[m]?.APIKey" required>
+                <textarea name="apikey" :value="models[m]?.APIKey" rows="1" required></textarea>
             </label>
             <label>
                 API 代理地址
-                <input type="url" name="apiurl" :value="models[m]?.APIUrl" :placeholder="models.APIUrlPlaceholder[m]" required>
+                <input type="url" name="apiurl" :value="models[m]?.APIUrl || models.APIUrlPlaceholder[m]" required>
             </label>
             <label>
                 模型列表
                 <textarea name="list" :value="models[m]?.List"></textarea>
             </label>
-            <button type="submit">保存并检查</button>
+            <div role="group">
+                <button class="secondary" type="submit" @click.prevent="optionsModel">检查可用</button>
+                <button type="submit" @click.prevent="updateModel">保存</button>
+            </div>
         </form>
     </details>
 </template>
