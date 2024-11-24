@@ -1,34 +1,19 @@
 package claude
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/liushuangls/go-anthropic/v2"
+	"moechat/core/api/part"
 )
 
-func transformToProviderMessages(msgs json.RawMessage) ([]anthropic.Message, error) {
-
-	var messages []map[string]any
-	if err := json.Unmarshal(msgs, &messages); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal messages: %w", err)
-	}
-
+func transformToProviderMessages(msgs []part.Message) ([]anthropic.Message, error) {
 	var claudeMessages []anthropic.Message
-	for _, msg := range messages {
-		role, ok := msg["role"].(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid role type, expected string")
+	for _, msg := range msgs {
+		if msg.Role == "user" {
+			claudeMessages = append(claudeMessages, anthropic.NewUserTextMessage(msg.Content))
+		} else if msg.Role == "assistant" {
+			claudeMessages = append(claudeMessages, anthropic.NewAssistantTextMessage(msg.Content))
 		}
-		content, ok := msg["content"].(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid content type, expected string")
-		}
-		if role == "user" {
-			claudeMessages = append(claudeMessages, anthropic.NewUserTextMessage(content))
-		} else if role == "assistant" {
-			claudeMessages = append(claudeMessages, anthropic.NewAssistantTextMessage(content))
-		}
-
 	}
+
 	return claudeMessages, nil
 }

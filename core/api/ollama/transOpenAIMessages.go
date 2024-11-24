@@ -1,33 +1,41 @@
 package ollama
 
 import (
-	"encoding/json"
+	"encoding/base64"
 	"fmt"
 	"github.com/sashabaranov/go-openai"
+	"moechat/core/api/part"
+	"moechat/core/database"
 )
 
-func transformToProviderMessages(msgs json.RawMessage) ([]openai.ChatCompletionMessage, error) {
-	// 将 json.RawMessage 解析为 []map[string]interface{}
-	var messages []map[string]any
-	if err := json.Unmarshal(msgs, &messages); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal messages: %w", err)
-	}
-
+func transformToProviderMessages(msgs []part.Message) ([]openai.ChatCompletionMessage, error) {
 	var openAIMessages []openai.ChatCompletionMessage
-	for _, msg := range messages {
-		role, ok := msg["role"].(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid role type, expected string")
-		}
-		content, ok := msg["content"].(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid content type, expected string")
+	var file database.File
+	for _, msg := range msgs {
+		if msg.Files != nil {
+			var MultiContent []openai.ChatMessagePart
+			for _, f := range msg.Files {
+				if err := database.DB.Get(&file, `SELECT * from file WHERE hash = ?`, f.Hash); err != nil {
+					return nil, err
+				}
+				MultiContent = append(MultiContent, openai.ChatMessagePart{
+					Type: openai.ChatMessagePartTypeImageURL,
+					ImageURL: &openai.ChatMessageImageURL{
+						URL: fmt.Sprintf("data:%s;base64,%s", file.MimeType, base64.StdEncoding.EncodeToString(file.Data)),
+					},
+				})
+			}
+			openAIMessages = append(openAIMessages, openai.ChatCompletionMessage{
+				Role:         msg.Role,
+				MultiContent: MultiContent,
+			})
+		} else {
+			openAIMessages = append(openAIMessages, openai.ChatCompletionMessage{
+				Role:    msg.Role,
+				Content: msg.Content,
+			})
 		}
 
-		openAIMessages = append(openAIMessages, openai.ChatCompletionMessage{
-			Role:    role,
-			Content: content,
-		})
 	}
 	return openAIMessages, nil
 }

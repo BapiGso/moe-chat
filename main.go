@@ -1,8 +1,11 @@
 package main
 
-import "moechat/core"
+import (
+	"moechat/core"
+)
 
 func main() {
 	m := core.New()
 	m.Route()
+
 }

@@ -2,7 +2,6 @@ package gemini
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/generative-ai-go/genai"
@@ -11,6 +10,7 @@ import (
 	"google.golang.org/api/option"
 	"io"
 	"log/slog"
+	"moechat/core/api/part"
 	"moechat/core/database"
 	"strings"
 )
@@ -38,7 +38,7 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return 0, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
 	var dbModel database.Model
 	var err error
 	if err := database.DB.Get(&dbModel, `SELECT * from model WHERE provider = 'Gemini' AND active = 1`); err != nil {
@@ -72,7 +72,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.R
 	cs.History = history
 	//model.SystemInstruction = genai.NewUserContent(genai.Text("You are Yoda from Star Wars."))
 	//model.ResponseMIMEType = "application/json"
-	c.resStream = cs.SendMessageStream(ctx.Request().Context(), genai.Text(lastMessage["content"].(string)))
+	c.resStream = cs.SendMessageStream(ctx.Request().Context(), genai.Text(lastMessage.Content))
 
 	return err
 }

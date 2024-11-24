@@ -1,12 +1,12 @@
 package openai
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/sashabaranov/go-openai"
 	"io"
+	"moechat/core/api/part"
 	"moechat/core/database"
 )
 
@@ -29,7 +29,7 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
 	var err error
 	var model database.Model
 	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'OpenAI' AND active = 1`); err != nil {

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"io"
@@ -14,15 +13,13 @@ import (
 // 前端要发的数据，什么公司的什么模型model，
 func Completion(c echo.Context) error {
 	req := &struct {
-		Provider     string          `json:"provider"`
-		Model        string          `json:"model"`
-		Messages     json.RawMessage `json:"messages"`
-		TetsMessages []part.Message  `form:"messages" `
+		Provider string         `json:"provider"`
+		Model    string         `json:"model"`
+		Messages []part.Message `form:"messages" `
 	}{}
 	if err := c.Bind(req); err != nil {
 		return err
 	}
-	fmt.Println(req.TetsMessages)
 	switch c.Request().Method {
 	case http.MethodPost:
 		w := c.Response()

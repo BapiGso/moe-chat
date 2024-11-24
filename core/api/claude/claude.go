@@ -1,11 +1,11 @@
 package claude
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/liushuangls/go-anthropic/v2"
+	"moechat/core/api/part"
 	"moechat/core/database"
 )
 
@@ -27,7 +27,7 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
 	var model database.Model
 	var err error
 	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'Claude' AND active = 1`); err != nil {
@@ -39,7 +39,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.R
 		return err
 	}
 	request := anthropic.MessagesRequest{
-		Model:     "claude-3-5-sonnet-20241022",
+		Model:     anthropic.Model(baseModel),
 		Messages:  claudeMessages,
 		MaxTokens: 1000,
 	}

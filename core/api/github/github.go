@@ -1,13 +1,13 @@
 package github
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/sashabaranov/go-openai"
 	"io"
+	"moechat/core/api/part"
 	"moechat/core/database"
 )
 
@@ -52,7 +52,7 @@ func (c *Client) GetModelList() []string {
 	return ids
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error {
+func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
 	var model database.Model
 	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'GitHub' AND active = 1`); err != nil {
 		return err

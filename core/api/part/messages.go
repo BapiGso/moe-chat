@@ -1,9 +1,10 @@
 package part
 
-import "mime/multipart"
-
 type Message struct {
-	Role    string          `form:"role"`
-	Content string          `form:"content"`
-	Files   *multipart.Form `form:"files"`
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	Files   []struct {
+		MimeType string `json:"MimeType"`
+		Hash     string `json:"Hash"`
+	} `json:"files"`
 }

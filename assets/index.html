@@ -9,6 +9,8 @@
     <script type="text/javascript" src="/assets/js/marked.min.js" defer></script>
     <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
+    <script src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
+
     <style>
         [data-theme=light],
         :root:not([data-theme=dark]) {
@@ -102,6 +104,12 @@
                     this.data = (await (await fetch('/chats', { method: 'POST' })).json()) || [];
                 },
             },
+            files:{
+                messages:[],
+                async post(){
+                    this.messages = (await (await fetch('/file', { method: 'POST' ,body: new FormData(event.target.form)})).json()) || [];
+                }
+            },
             menuShow:true,
             chatSettingShow:false,
             ProviderModel: "",//下拉菜单的绑定，服务端不用
@@ -112,6 +120,10 @@
                     const textarea = this.$refs.userContent;
                     if (!event.shiftKey) {
                         event.preventDefault()
+                        if (this.files.messages.length>0){
+                            this.chat.data.messages.push({ content: "", role: "user" ,files:this.files.messages});
+                            this.files.messages=[]
+                        }
                         this.chat.data.messages.push({ content: textarea.value, role: "user" });
                         textarea.value = '';
                         this.postCompletion();
@@ -134,7 +146,7 @@
                 });
                 xs.addEventListener('message', e => {
                     // 获取当前messages中的最后一条消息
-                    const messages = this.chat.messages;
+                    const messages = this.chat.data.messages;
                     const lastMessage = messages[messages.length - 1];
                     // 将接收到的数据追加到最后一条消息的content中
                     if (lastMessage && lastMessage.role === "assistant") {
@@ -147,7 +159,7 @@
                     let res=await this.chat.put(this.chat.data)
                     history.replaceState(null, '', `/chat/${res.id}`);
                     console.log(`SSE connection closed,replaced history with ${res.id}`);
-                    await this.postChats()
+                    await this.chats.post()
                 });
             }
         }))

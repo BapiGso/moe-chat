@@ -16,24 +16,35 @@
     </div>
 </header>
 
-
 <article class="flex-col flex-10 overflow-y-auto p-5" >
     <template x-for="m in chat.data.messages">
         <section class="flex-row m-3" :class="m.role === 'user'&&'flex-row-reverse'" >
-<!--            todo highlight LaTex-->
-            <div class=" px-3 py-4 bg-c9e0ed w-80" :class="m.role === 'user' && 'bg-ded4ed'"  x-html="marked.parse(m.content)"></div>
+            <!-- 先渲染图片 -->
+            <template x-if="m.files && m.files.length > 0">
+                <div class="flex-row w-half p-1">
+                    <template x-for="file in m.files">
+                        <img :src="`/file?hash=${file.Hash}`"/>
+                    </template>
+                </div>
+            </template>
+            <template x-if="!m.files">
+            <!-- 再渲染消息内容 -->
+                <div  m-2 rounded text-teal-400 class="px-3 py-4 bg-c9e0ed w-80"
+                     :class="m.role === 'user' && 'bg-ded4ed'"
+                     x-html="marked.parse(m.content)">
+                </div>
+            </template>
         </section>
     </template>
 </article>
 
 <footer class="h-14 flex-col justify-center">
-    <form action="/file" method="post" enctype="multipart/form-data">
-        <input type="file" name="files" multiple @change="$el.form.submit()">
+    <form >
+        <input type="file" name="files" multiple @change="files.post()" x-ref="files" style="display: none">
     </form>
 <!--    todo fileContent 输入框增高-->
     <form class="flex-row align-center p-2" @submit.prevent>
-        <input type="file" multiple style="display: none">
-        <i class="logo i-add mx-1"></i>
+        <i class="logo i-add mx-1" @click="$refs.files.click()"></i>
         <i class="logo i-slider mx-2" @click="chatSettingShow=true"></i>
         <textarea class="m-0 mx-3 resize-none" x-bind="userContent" rows="1"></textarea>
         <i class="logo i-mic mx-2"></i>

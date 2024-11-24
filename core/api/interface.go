@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"moechat/core/api/azure"
 	"moechat/core/api/claude"
@@ -10,11 +9,12 @@ import (
 	"moechat/core/api/grok"
 	"moechat/core/api/ollama"
 	"moechat/core/api/openai"
+	"moechat/core/api/part"
 )
 
 type Adapter interface {
 	GetModelList() []string
-	CreateResStream(ctx echo.Context, baseModel string, msgs json.RawMessage) error
+	CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error
 	Read(p []byte) (n int, err error)
 }
 

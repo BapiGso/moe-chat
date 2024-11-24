@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var debug bool
+
 var JWT, _ = echojwt.Config{
 	SuccessHandler: func(c echo.Context) {
 		user, _ := c.Get("user").(*jwt.Token)
@@ -24,7 +26,6 @@ var JWT, _ = echojwt.Config{
 	Skipper: func(c echo.Context) bool {
 		assetsPath := strings.HasPrefix(c.Path(), "/assets/")
 		loginPath := c.Path() == "/login"
-		debug := os.Getenv("MOECHAT_DEBUG") == "1"
 		return assetsPath || loginPath || debug
 	},
 }.ToMiddleware()

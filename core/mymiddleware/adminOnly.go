@@ -5,13 +5,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"moechat/core/database"
 	"net/http"
-	"os"
 )
 
 func AdminOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// 从 JWT 中获取用户信息
-		if os.Getenv("MOECHAT_DEBUG") == "1" {
+		if debug {
 			return next(c)
 		}
 		userToken, ok := c.Get("user").(*jwt.Token)
