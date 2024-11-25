@@ -52,22 +52,25 @@ func (c *Client) GetModelList() []string {
 	return ids
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
+func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) error {
 	var model database.Model
-	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'GitHub' AND active = 1`); err != nil {
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = ? AND active = 1`, completion.Provider); err != nil {
 		return err
 	}
 	config := openai.DefaultConfig(model.APIKey)
 	config.BaseURL = model.APIUrl
 	client := openai.NewClientWithConfig(config)
-	openAIMessages, err := transformToProviderMessages(ctx, msgs)
+	openAIMessages, err := transformToProviderMessages(ctx, completion.Messages)
 	if err != nil {
 		return err
 	}
 	request := openai.ChatCompletionRequest{
-		Model:    baseModel,
-		Messages: openAIMessages,
-		Stream:   true,
+		Model:       completion.Model,
+		Messages:    openAIMessages,
+		MaxTokens:   completion.MaxTokens,
+		Temperature: completion.Temperature,
+		TopP:        completion.TopP,
+		Stream:      true,
 	}
 
 	c.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)

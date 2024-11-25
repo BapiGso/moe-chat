@@ -38,7 +38,7 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return 0, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
+func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) error {
 	var dbModel database.Model
 	var err error
 	if err := database.DB.Get(&dbModel, `SELECT * from model WHERE provider = 'Gemini' AND active = 1`); err != nil {
@@ -48,28 +48,19 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 	if err != nil {
 		return err
 	}
-	//file, err := client.UploadFileFromPath(nil, "Cajun_instruments.jpg", nil)
-	//if err != nil {
-	//}
-	//uploadFile, err := client.UploadFile(file)
-	//if err != nil {
-	//	return err
-	//}
-	//openFile, err := os.OpenFile("test.jpg", os.O_RDWR|os.O_CREATE, 0666)
-	//if err != nil {
-	//	return err
-	//}
-	model := client.GenerativeModel(baseModel)
-	model.SetTemperature(0.9)
-	model.SetTopP(0.5)
-	model.SetTopK(20)
-	model.SetMaxOutputTokens(1000)
+
+	model := client.GenerativeModel(completion.Model)
+	model.SetTemperature(completion.Temperature)
+	model.SetTopP(completion.TopP)
+	model.SetTopK(int32(completion.TopK))
+	model.SetMaxOutputTokens(int32(completion.MaxTokens))
 	cs := model.StartChat()
-	history, lastMessage, err := transformToProviderMessages(ctx, msgs)
+	history, lastMessage, err := transformToProviderMessages(ctx, completion.Messages)
 	if err != nil {
 		return err
 	}
 	cs.History = history
+
 	//model.SystemInstruction = genai.NewUserContent(genai.Text("You are Yoda from Star Wars."))
 	//model.ResponseMIMEType = "application/json"
 	c.resStream = cs.SendMessageStream(ctx.Request().Context(), genai.Text(lastMessage.Content))
@@ -112,3 +103,27 @@ func (c *Client) GetModelList() []string {
 	}
 	return ids
 }
+
+//func test()  {
+//	partTemp := func() []genai.Part {
+//		var tmp []genai.Part
+//		for _, msg := range msgs {
+//			if msg.Files != nil {
+//				var file database.File
+//				for _, f := range msg.Files {
+//					err := database.DB.Get(&file,
+//						`SELECT * from file WHERE hash = ? AND email = ?`, f.Hash, ctx.Get("email"))
+//					if err != nil {
+//						log.Fatal(err)
+//					}
+//					tmp = append(tmp, genai.ImageData(file.MimeType, file.Data))
+//				}
+//			} else {
+//				tmp = append(tmp, genai.Text(msg.Content))
+//			}
+//		}
+//		return tmp
+//	}()
+//	c.resStream = cs.SendMessageStream(ctx.Request().Context(), partTemp...)
+//	return
+//}

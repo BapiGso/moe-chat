@@ -19,9 +19,7 @@
 </article>
 
 <footer flex h-7% justify-center items-center hover:bg-gray-100 rounded>
-    <picture>
-        <source :srcset="m.ProfileImageURL" w-8 h-8 rounded-full>
-        <img src="/assets/img/default-avatar.png" w-8 h-8 rounded-full>
-    </picture>
-    <span px-3>123</span>
+    <img :src="user?.data?.ProfileImageURL||'/assets/img/default-avatar.png'" w-8 h-8 rounded-full>
+
+    <span px-3 x-text="user?.data?.Email"></span>
 </footer>

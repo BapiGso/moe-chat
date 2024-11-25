@@ -20,12 +20,8 @@ CREATE TABLE IF NOT EXISTS "chatidtag" (
 	"timestamp"	INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "config" (
-	"id"	INTEGER NOT NULL,
-	"data"	JSON NOT NULL,
-	"version"	INTEGER NOT NULL,
-	"created_at"	DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-	"updated_at"	DATETIME DEFAULT (CURRENT_TIMESTAMP),
-	PRIMARY KEY("id")
+    "key" VARCHAR(255) NOT NULL PRIMARY KEY,
+    "value" TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "document" (
 	"id"	INTEGER NOT NULL,
@@ -49,15 +45,6 @@ CREATE TABLE IF NOT EXISTS "feedback" (
 	"created_at"	BIGINT NOT NULL,
 	"updated_at"	BIGINT NOT NULL,
 	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "file" (
-    "hash" TEXT PRIMARY KEY,
-    "email" TEXT NOT NULL,
-    "filename" TEXT NOT NULL,
-    "mime_type" TEXT NOT NULL,
-    "data" TEXT NOT NULL,
-    "created_at" INTEGER NOT NULL,
-    "updated_at" INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "file" (
         hash TEXT PRIMARY KEY,
@@ -161,10 +148,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "updated_at" INTEGER NOT NULL,
     "settings" TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS "setting" (
-    "key" VARCHAR(255) NOT NULL,
-    "value" TEXT NOT NULL
-);
+
 CREATE UNIQUE INDEX IF NOT EXISTS "chatidtag_id" ON "chatidtag" (
 	"id"
 );

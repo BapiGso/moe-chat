@@ -9,15 +9,15 @@ import (
 func AdminSetting(c echo.Context) error {
 	switch c.Request().Method {
 	case http.MethodPost:
-		var settings []database.Setting
-		err := database.DB.Select(&settings, `SELECT * FROM setting`)
+		var config []database.Config
+		err := database.DB.Select(&config, `SELECT * FROM config`)
 		if err != nil {
 			return err
 		}
-		return c.JSON(http.StatusOK, settings)
+		return c.JSON(http.StatusOK, config)
 	case http.MethodPut:
-		exec, err := database.DB.Exec(`INSERT OR REPLACE INTO setting (key,value)
-		VALUES (?,?)`, nil, nil)
+		exec, err := database.DB.Exec(`INSERT OR REPLACE INTO config (key,value)
+		VALUES (?,?)`, c.QueryParam("key"), c.QueryParam("value"))
 		if err != nil {
 			return err
 		}

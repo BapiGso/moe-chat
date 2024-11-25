@@ -27,21 +27,25 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
+func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) error {
 	var model database.Model
 	var err error
 	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'Claude' AND active = 1`); err != nil {
 		return err
 	}
 	client := anthropic.NewClient(model.APIKey)
-	claudeMessages, err := transformToProviderMessages(ctx, msgs)
+	claudeMessages, err := transformToProviderMessages(ctx, completion.Messages)
 	if err != nil {
 		return err
 	}
 	request := anthropic.MessagesRequest{
-		Model:     anthropic.Model(baseModel),
-		Messages:  claudeMessages,
-		MaxTokens: 1000,
+		Model:       anthropic.Model(completion.Model),
+		Messages:    claudeMessages,
+		MaxTokens:   completion.MaxTokens,
+		Stream:      true,
+		Temperature: &completion.Temperature,
+		TopP:        &completion.TopP,
+		TopK:        &completion.TopK,
 	}
 	c.resStream, err = client.CreateMessagesStream(ctx.Request().Context(), anthropic.MessagesStreamRequest{
 		MessagesRequest: request,

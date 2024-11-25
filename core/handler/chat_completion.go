@@ -12,11 +12,7 @@ import (
 // Completion 用于将会话发送给ai todo 可能需要池化
 // 前端要发的数据，什么公司的什么模型model，
 func Completion(c echo.Context) error {
-	req := &struct {
-		Provider string         `json:"provider"`
-		Model    string         `json:"model"`
-		Messages []part.Message `form:"messages" `
-	}{}
+	req := new(part.Completion)
 	if err := c.Bind(req); err != nil {
 		return err
 	}
@@ -30,7 +26,7 @@ func Completion(c echo.Context) error {
 		if err != nil {
 			return err
 		}
-		if err := apiAdapter.CreateResStream(c, req.Model, req.Messages); err != nil {
+		if err := apiAdapter.CreateResStream(c, req); err != nil {
 			return err
 		}
 		buf := make([]byte, 512)

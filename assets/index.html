@@ -8,7 +8,7 @@
     <script type="text/javascript" src="/assets/js/XhrSource.js" defer></script>
     <script type="text/javascript" src="/assets/js/marked.min.js" defer></script>
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
-    <script src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
+    <script src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js" defer></script>
 
 </head>
 <body flex overflow-hidden h-screen m-0>
@@ -25,6 +25,7 @@
             async init() {
                 await this.chats.post();
                 await this.chat.post();
+                await this.user.post();
             },
             async devFetch(el){
                 let xText=el.innerText
@@ -32,10 +33,7 @@
                     el.innerHTML= await (await fetch(xText.split('"')[1])).text()
                 }
             },
-            max_tokens:4096,//上下文长度
-            temperature:0.7,//温度
-            topk:40,//topk
-            topp:0.9,//topp
+
             chat:{
                 data:{
                     messages: [],
@@ -65,10 +63,12 @@
                 messages:[],
                 async post(){
                     this.messages = (await (await fetch('/file', { method: 'POST' ,body: new FormData(event.target.form)})).json()) || [];
+                    event.target.form.reset()
                 }
             },
             user:{
                 data:{},
+                show:false,
                 async post(){
                     this.data = (await (await fetch('/user', { method: 'POST' })).json()) || {};
                 }
@@ -78,11 +78,20 @@
             ProviderModel: "",//下拉菜单的绑定，服务端不用
             systemPrompt:"",//prompt
             userContent: {
+                systemPrompt:"",
+                max_tokens:4096,//上下文长度
+                temperature:0.7,//温度
+                topk:40,//topk
+                topp:0.9,//topp
                 'x-ref': 'userContent',
                 '@keydown.enter'(event) {
                     const textarea = this.$refs.userContent;
                     if (!event.shiftKey) {
                         event.preventDefault()
+                        if (this.systemPrompt!=="" && this.chat.data.messages[0].role !== "system") {
+                            // Add system prompt as the first message in msgs
+                            this.chat.data.messages.unshift({ role: "system", content: this.systemPrompt });
+                        }
                         if (this.files.messages.length>0){
                             this.chat.data.messages.push({ content: "", role: "user" ,files:this.files.messages});
                             this.files.messages=[]
@@ -105,7 +114,11 @@
                 let chatForm={
                     provider : this.ProviderModel.split(':')[0], // 冒号前的部分
                     model :this.ProviderModel.split(':').slice(1).join(':'),// 冒号后的部分
-                    messages: this.chat.data.messages
+                    messages: this.chat.data.messages,
+                    max_tokens:this.userContent.max_tokens,//上下文长度
+                    temperature:this.userContent.temperature,//温度
+                    topk:this.userContent.topk,//topk
+                    topp:this.userContent.topp,//topp
                 }
                 const xs = XhrSource('/chat/completion', {
                     method: 'POST',

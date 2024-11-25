@@ -29,18 +29,21 @@ func (c *Client) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error {
+func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) error {
 	var err error
 	var model database.Model
-	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = 'OpenAI' AND active = 1`); err != nil {
+	if err := database.DB.Get(&model, `SELECT * from model WHERE provider = ? AND active = 1`, completion.Provider); err != nil {
 		return err
 	}
 	client := openai.NewClient(model.APIKey)
-	openAIMessages, err := transformToProviderMessages(ctx, msgs)
+	openAIMessages, err := transformToProviderMessages(ctx, completion.Messages)
 	request := openai.ChatCompletionRequest{
-		Model:    baseModel,
-		Messages: openAIMessages,
-		Stream:   true,
+		Model:       completion.Model,
+		Messages:    openAIMessages,
+		MaxTokens:   completion.MaxTokens,
+		Temperature: completion.Temperature,
+		TopP:        completion.TopP,
+		Stream:      true,
 	}
 	c.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)
 	return err

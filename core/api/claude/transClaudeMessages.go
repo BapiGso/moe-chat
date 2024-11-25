@@ -16,7 +16,8 @@ func transformToProviderMessages(ctx echo.Context, msgs []part.Message) ([]anthr
 	for _, msg := range msgs {
 		if msg.Files != nil {
 			message := anthropic.Message{
-				Role: anthropic.RoleUser,
+				Role:    anthropic.RoleUser,
+				Content: []anthropic.MessageContent{},
 			}
 			for _, f := range msg.Files {
 				if err := database.DB.Get(&file,

@@ -15,7 +15,7 @@ import (
 
 type Adapter interface {
 	GetModelList() []string
-	CreateResStream(ctx echo.Context, baseModel string, msgs []part.Message) error
+	CreateResStream(ctx echo.Context, completion *part.Completion) error
 	Read(p []byte) (n int, err error)
 }
 
