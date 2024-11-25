@@ -36,7 +36,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 	}
 	config := openai.DefaultAzureConfig(model.APIKey, model.APIUrl)
 	client := openai.NewClientWithConfig(config)
-	openAIMessages, err := transformToProviderMessages(msgs)
+	openAIMessages, err := transformToProviderMessages(ctx, msgs)
 	request := openai.ChatCompletionRequest{
 		Model:    baseModel,
 		Messages: openAIMessages,

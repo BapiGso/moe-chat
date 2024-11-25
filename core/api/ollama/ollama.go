@@ -81,7 +81,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 	config := openai.DefaultConfig(model.APIKey)
 	config.BaseURL = model.APIUrl
 	client := openai.NewClientWithConfig(config)
-	openAIMessages, err := transformToProviderMessages(msgs)
+	openAIMessages, err := transformToProviderMessages(ctx, msgs)
 	if err != nil {
 		return err
 	}

@@ -34,7 +34,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 		return err
 	}
 	client := anthropic.NewClient(model.APIKey)
-	claudeMessages, err := transformToProviderMessages(msgs)
+	claudeMessages, err := transformToProviderMessages(ctx, msgs)
 	if err != nil {
 		return err
 	}

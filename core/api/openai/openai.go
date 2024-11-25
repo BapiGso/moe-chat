@@ -36,7 +36,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 		return err
 	}
 	client := openai.NewClient(model.APIKey)
-	openAIMessages, err := transformToProviderMessages(msgs)
+	openAIMessages, err := transformToProviderMessages(ctx, msgs)
 	request := openai.ChatCompletionRequest{
 		Model:    baseModel,
 		Messages: openAIMessages,

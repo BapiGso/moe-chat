@@ -65,7 +65,7 @@ func (c *Client) CreateResStream(ctx echo.Context, baseModel string, msgs []part
 	model.SetTopK(20)
 	model.SetMaxOutputTokens(1000)
 	cs := model.StartChat()
-	history, lastMessage, err := transformToProviderMessages(msgs)
+	history, lastMessage, err := transformToProviderMessages(ctx, msgs)
 	if err != nil {
 		return err
 	}

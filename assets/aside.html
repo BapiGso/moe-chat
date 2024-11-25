@@ -1,5 +1,5 @@
-<header>
-    <div class="flex-row align-center justify-between p-3 h-14">
+<header h-7%>
+    <div flex flex-row align-center justify-between p-3 h-7% class="">
         <i class="logo i-edit" @click="chat.post('/chat')"></i>
         <i class="logo i-align" @click="menuShow=false"></i>
     </div>
@@ -9,19 +9,19 @@
     </form>
 </header>
 
-<article class="flex-10 overflow-y-auto p-1">
-    <ul class="p-1 m-2">
+<article flex overflow-y-auto p-1 h-86%>
+    <ul p-1 m-0 w-full>
         <template x-for="m in chats.data">
-            <li x-text="m.Title" @click="await chat.post(`/chat/${m.ID}`)"></li>
+            <li x-text="m.Title" @click="await chat.post(`/chat/${m.ID}`)"
+                cursor-pointer list-none px-3 py-1 m-1 hover:bg-gray-100 rounded></li>
         </template>
     </ul>
 </article>
 
-<footer class="h-14">
-<!--    todo userSetting-->
-    <svg width="100%" height="40" class="mx-5 my-2">
-        <circle cx="20" cy="20" r="18" fill="#007bff" />
-        <text x="20" y="25" font-size="14" text-anchor="middle" fill="#fff" x-text="1"></text>
-        <text x="45" y="25" font-size="16" fill="#000" x-text="123"></text>
-    </svg>
+<footer flex h-7% justify-center items-center hover:bg-gray-100 rounded>
+    <picture>
+        <source :srcset="m.ProfileImageURL" w-8 h-8 rounded-full>
+        <img src="/assets/img/default-avatar.png" w-8 h-8 rounded-full>
+    </picture>
+    <span px-3>123</span>
 </footer>

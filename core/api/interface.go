@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/labstack/echo/v4"
 	"moechat/core/api/azure"
 	"moechat/core/api/claude"
@@ -18,22 +19,23 @@ type Adapter interface {
 	Read(p []byte) (n int, err error)
 }
 
-func New(provider string) Adapter {
+func New(provider string) (Adapter, error) {
 	switch provider {
 	case "Azure":
-		return new(azure.Client)
+		return new(azure.Client), nil
 	case "Claude":
-		return new(claude.Client)
+		return new(claude.Client), nil
 	case "Gemini":
-		return new(gemini.Client)
+		return new(gemini.Client), nil
 	case "GitHub":
-		return new(github.Client)
+		return new(github.Client), nil
 	case "Grok":
-		return new(grok.Client)
+		return new(grok.Client), nil
 	case "Ollama":
-		return new(ollama.Client)
+		return new(ollama.Client), nil
 	case "OpenAI":
-		return new(openai.Client)
+		return new(openai.Client), nil
+	default:
+		return nil, errors.New("unsupported provider")
 	}
-	return nil
 }

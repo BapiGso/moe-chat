@@ -45,7 +45,10 @@ func AdminModel(c echo.Context) error {
 	case http.MethodDelete:
 	case http.MethodGet:
 	case http.MethodOptions:
-		a := api.New(req.Provider)
+		a, err := api.New(req.Provider)
+		if err != nil {
+			return err
+		}
 		modelList := a.GetModelList()
 		return c.JSON(http.StatusOK, modelList)
 	}

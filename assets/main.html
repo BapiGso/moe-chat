@@ -1,7 +1,7 @@
-<header class="h-14 flex-row align-center justify-between px-3">
-    <div class="flex-row align-center">
+<header flex h-7% items-center justify-between px-3 w-full>
+    <div flex align-center>
         <i class="logo i-align mx-2"  @click="menuShow=true" x-show="!menuShow"></i>
-        <select class="mx-2 my-0" aria-label x-model="ProviderModel">
+        <select my-0 border-none bg-white focus:outline-none focus:ring-0 aria-label x-model="ProviderModel">
             <template x-for="m in await (await fetch('/model',{method:'POST'})).json()">
                 <optgroup :label="m.Provider" label="">
                     <template x-for="n in m?.List?.split(',')">
@@ -16,21 +16,23 @@
     </div>
 </header>
 
-<article class="flex-col flex-10 overflow-y-auto p-5" >
+<article flex flex-col flex-auto overflow-y-auto p-7 >
     <template x-for="m in chat.data.messages">
-        <section class="flex-row m-3" :class="m.role === 'user'&&'flex-row-reverse'" >
+        <section flex flex-row m-3
+                 :flex-row-reverse="m.role === 'user'?undefined:false">
             <!-- 先渲染图片 -->
             <template x-if="m.files && m.files.length > 0">
-                <div class="flex-row w-half p-1">
+                <div flex flex-row max-w-xs :class="m.role === 'user' && 'flex-row-reverse bg-purple-50'">
                     <template x-for="file in m.files">
-                        <img :src="`/file?hash=${file.Hash}`"/>
+                        <img max-w-xs p-1 bg-purple-50 rounded object-cover h-auto :src="`/file?hash=${file.Hash}`"/>
                     </template>
                 </div>
             </template>
             <template x-if="!m.files">
             <!-- 再渲染消息内容 -->
-                <div  m-2 rounded text-teal-400 class="px-3 py-4 bg-c9e0ed w-80"
-                     :class="m.role === 'user' && 'bg-ded4ed'"
+                <div rounded max-w-xl px-3 py-0 bg-blue-50
+                     :flex-row-reverse="m.role === 'user'?undefined:false"
+                     :bg-purple-50="m.role === 'user'?undefined:false"
                      x-html="marked.parse(m.content)">
                 </div>
             </template>
@@ -38,47 +40,112 @@
     </template>
 </article>
 
-<footer class="h-14 flex-col justify-center">
-    <form >
+<footer flex flex-col justify-center items-center bg-white>
+    <form flex w-80%>
+        <template x-for="(file, index) in files.messages" :key="file.Hash">
+            <div m-2 p-2 w-20 h-20 rounded bg-cover bg-center relative cursor-pointer inline-block
+                    :style="{
+      backgroundImage: file.MimeType.startsWith('image/')
+        ? `url(/file?hash=${file.Hash})`
+        : `url(/assets/${file.MimeType})`
+    }"
+                    @mouseenter="file.showDelete = true"
+                    @mouseleave="file.showDelete = false"
+                    @click="files.messages.splice(index, 1)"
+            >
+                <div x-show="file.showDelete"
+                     text-xs  absolute rounded inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm text-white font-bold>
+                    Click to delete
+                </div>
+            </div>
+        </template>
         <input type="file" name="files" multiple @change="files.post()" x-ref="files" style="display: none">
     </form>
 <!--    todo fileContent 输入框增高-->
-    <form class="flex-row align-center p-2" @submit.prevent>
-        <i class="logo i-add mx-1" @click="$refs.files.click()"></i>
-        <i class="logo i-slider mx-2" @click="chatSettingShow=true"></i>
-        <textarea class="m-0 mx-3 resize-none" x-bind="userContent" rows="1"></textarea>
-        <i class="logo i-mic mx-2"></i>
+    <form flex flex-row justify-between items-end rounded-3xl m-b-5 w-80% bg-gray-50 shadow-sm hover:shadow-lg transition-all>
+        <i m-2 class="logo i-add" @click="$refs.files.click()"></i>
+        <i m-2 class="logo i-slider" @click="chatSettingShow=true"></i>
+        <textarea flex-1 h-auto p-3 resize-none border-none m-0 bg-gray-50 focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
+        <i m-2 class="logo i-mic" @click="alert('这个功能还没做')"></i>
     </form>
 </footer>
 
-<dialog :open="chatSettingShow">
-    <article>
-        <header class="p-3">
-            <a rel="prev" @click.prevent="chatSettingShow=false"></a>
-            <strong class="m-3">高级对话设置</strong>
+<dialog x-show="chatSettingShow"
+        @click.self="chatSettingShow=false"
+        flex items-center justify-center m-0 p-0 w-full h-full backdrop-blur-sm bg-transparent border-none>
+    <article flex flex-col bg-white rounded-xl shadow-lg max-w-full w-[500px] transition-all duration-300 hover:shadow-xl>
+        <header flex justify-between items-center px-6 py-4 bg-gray-50 rounded-t-xl border-b border-gray-100>
+        <strong text-lg font-medium text-gray-800>高级对话设置</strong>
+        <a @click.prevent="chatSettingShow=false"
+           text-gray-400 hover:text-gray-600 transition-colors cursor-pointer>
+            关闭
+        </a>
         </header>
-        <form class="p-3">
-            <label>
-                系统提示词 (System Prompt)
-                <textarea rows="3" x-model="systemPrompt" placeholder="输入系统提示词 (Prompt)"></textarea>
+
+        <form flex flex-col gap-6 p-6>
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>系统提示词 (System Prompt)</span>
+                <textarea
+                        rows="3"
+                        x-model="systemPrompt"
+                        placeholder="输入系统提示词 (Prompt)"
+                        mt-1 p-3 border border-gray-200 rounded-lg shadow-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition-all resize-none
+                ></textarea>
             </label>
-            <label>
-                上下文长度
-                <input type="range" x-model="max_tokens" min="0" max="4096" step="1"  @input="$el.setAttribute('data-tooltip', $el.value)">
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>上下文长度</span>
+                <input type="range"
+                       x-model="max_tokens"
+                       min="0"
+                       max="4096"
+                       step="1"
+                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                before:absolute before:h-full before:bg-blue-500 before:rounded-full>
             </label>
-            <label>
-                温度 (Temperature)
-                <input type="range" x-model="temperature" min="0" max="1" step="0.1" @input="$el.setAttribute('data-tooltip', $el.value)" >
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>温度 (Temperature)</span>
+                <input type="range"
+                       x-model="temperature"
+                       min="0"
+                       max="1"
+                       step="0.1"
+                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                before:absolute before:h-full before:bg-blue-500 before:rounded-full>
             </label>
-            <label>
-                Top K
-                <input type="range" x-model="topk"  min="0" max="1" step="0.01" @input="$el.setAttribute('data-tooltip', $el.value)">
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>Top K</span>
+                <input type="range"
+                       x-model="topk"
+                       min="0"
+                       max="1"
+                       step="0.01"
+                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                before:absolute before:h-full before:bg-blue-500 before:rounded-full>
             </label>
-            <label>
-                Top P
-                <input type="range" x-model="topp" min="0" max="1" step="0.01" @input="$el.setAttribute('data-tooltip', $el.value)">
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>Top P</span>
+                <input type="range"
+                       x-model="topp"
+                       min="0"
+                       max="1"
+                       step="0.01"
+                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                before:absolute before:h-full before:bg-blue-500 before:rounded-full>
             </label>
         </form>
     </article>
 </dialog>
-

@@ -47,7 +47,7 @@ func File(c echo.Context) error {
 			// Create a new File instance
 			newFile := &database.File{
 				Hash:      hash,
-				Email:     `c.Get("email").(string)`, //todo
+				Email:     c.Get("email").(string),
 				Filename:  fileHeader.Filename,
 				MimeType:  fileHeader.Header.Get("Content-Type"),
 				Data:      fileData,
@@ -68,7 +68,7 @@ func File(c echo.Context) error {
 		return c.JSON(http.StatusOK, uploadedFilesData)
 	case http.MethodGet:
 		var file database.File
-		err := database.DB.Get(&file, "SELECT * FROM file WHERE hash = ?", c.QueryParam("hash"))
+		err := database.DB.Get(&file, "SELECT * FROM file WHERE hash = ? AND email = ?", c.QueryParam("hash"), c.Get("email"))
 		if err != nil {
 			return err
 		}

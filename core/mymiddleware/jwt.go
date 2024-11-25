@@ -26,6 +26,9 @@ var JWT, _ = echojwt.Config{
 	Skipper: func(c echo.Context) bool {
 		assetsPath := strings.HasPrefix(c.Path(), "/assets/")
 		loginPath := c.Path() == "/login"
+		if debug {
+			c.Set("email", "debug")
+		}
 		return assetsPath || loginPath || debug
 	},
 }.ToMiddleware()

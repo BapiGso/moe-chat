@@ -34,6 +34,9 @@ func (c *Core) Route() {
 	}))
 
 	//c.e.Any("/", handler.Login, middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(3)))
+	c.e.Any("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusFound, "/chat")
+	})
 	c.e.Any("/chat", handler.Chat)
 	c.e.Any("/chat/:ID", handler.Chat)
 	c.e.Any("/chat/completion", handler.Completion)

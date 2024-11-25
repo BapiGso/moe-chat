@@ -26,7 +26,10 @@ func Completion(c echo.Context) error {
 		w.Header().Set("Content-Type", "text/event-stream")
 		w.Header().Set("Cache-Control", "no-cache")
 		w.Header().Set("Connection", "keep-alive")
-		apiAdapter := api.New(req.Provider)
+		apiAdapter, err := api.New(req.Provider)
+		if err != nil {
+			return err
+		}
 		if err := apiAdapter.CreateResStream(c, req.Model, req.Messages); err != nil {
 			return err
 		}
