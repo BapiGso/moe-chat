@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="icon" type="image/jpg" href="/assets/img/favicon.jpg" />
+    <script type="text/javascript" src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
     <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
     <link rel="stylesheet" href="/assets/css/pico.purple.min.css">
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
@@ -35,7 +36,7 @@
         }
     </style>
 </head>
-<body class="flex-col w-full align-center">
+<body class="flex flex-col w-full items-center">
     <nav class="p-5 w-full">
         <ul>
             <li><strong>Moe Chat</strong></li>
@@ -55,10 +56,10 @@
     <section class="flex-col w-full p-5" x-init="devFetch($el)" x-show="menuActive==='user'">
         {{template "admin_user.html"}}
     </section>
-    <section class="flex-col w-full align-center p-5" x-init="devFetch($el)" x-show="menuActive==='model'">
+    <section class="flex-col w-1/2 items-center p-5" x-init="devFetch($el)" x-show="menuActive==='model'">
         {{template "admin_model.html"}}
     </section>
-    <section class="flex-col w-full align-center p-5" x-init="devFetch($el)" x-show="menuActive==='database'">
+    <section class="flex-col w-1/2 items-center p-5" x-init="devFetch($el)" x-show="menuActive==='database'">
         {{template "admin_database.html"}}
     </section>
 </body>

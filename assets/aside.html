@@ -1,5 +1,5 @@
-<header h-7%>
-    <div flex flex-row align-center justify-between p-3 h-7% class="">
+<header min-h-14>
+    <div flex flex-row align-center justify-between p-3 min-h-14 class="">
         <i class="logo i-edit" @click="chat.post('/chat')"></i>
         <i class="logo i-align" @click="menuShow=false"></i>
     </div>
@@ -9,7 +9,7 @@
     </form>
 </header>
 
-<article flex overflow-y-auto p-1 h-86%>
+<article flex flex-1 overflow-y-auto p-1 >
     <ul p-1 m-0 w-full>
         <template x-for="m in chats.data">
             <li x-text="m.Title" @click="await chat.post(`/chat/${m.ID}`)"
@@ -18,8 +18,10 @@
     </ul>
 </article>
 
-<footer flex h-7% justify-center items-center hover:bg-gray-100 rounded>
-    <img :src="user?.data?.ProfileImageURL||'/assets/img/default-avatar.png'" w-8 h-8 rounded-full>
-
+<footer flex min-h-14 justify-center items-center hover:bg-gray-100 rounded x-show="user.data!=={}">
+    <picture>
+        <source :srcset="user?.data?.ProfileImageURL" class="w-8 h-8 rounded-full" srcset="">
+        <img src="/assets/img/default-avatar.png" class="w-8 h-8 rounded-full">
+    </picture>
     <span px-3 x-text="user?.data?.Email"></span>
 </footer>

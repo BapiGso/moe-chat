@@ -1,4 +1,4 @@
-<header flex h-7% items-center justify-between px-3 w-full>
+<header flex min-h-14 items-center justify-between px-3 w-full>
     <div flex align-center>
         <i class="logo i-align mx-2"  @click="menuShow=true" x-show="!menuShow"></i>
         <select my-0 border-none bg-white focus:outline-none focus:ring-0 aria-label x-model="ProviderModel">
@@ -22,7 +22,9 @@
                  :flex-row-reverse="m.role === 'user'?undefined:false">
             <!-- 先渲染图片 -->
             <template x-if="m.files && m.files.length > 0">
-                <div flex flex-row max-w-xs :class="m.role === 'user' && 'flex-row-reverse bg-purple-50'">
+                <div flex flex-row max-w-xs
+                     :flex-row-reverse="m.role === 'user'?undefined:false"
+                     :bg-purple-50="m.role === 'user'?undefined:false">
                     <template x-for="file in m.files">
                         <img max-w-xs p-1 bg-purple-50 rounded object-cover h-auto :src="`/file?hash=${file.Hash}`"/>
                     </template>
@@ -30,7 +32,7 @@
             </template>
             <template x-if="!m.files">
             <!-- 再渲染消息内容 -->
-                <div rounded max-w-xl px-3 py-0 bg-blue-50
+                <div rounded max-w-xl p-3 bg-blue-50 class="pico"
                      :flex-row-reverse="m.role === 'user'?undefined:false"
                      :bg-purple-50="m.role === 'user'?undefined:false"
                      x-html="marked.parse(m.content)">
@@ -65,7 +67,7 @@
     <form flex flex-row justify-between items-end rounded-3xl m-b-5 w-80% bg-gray-50 shadow-sm hover:shadow-lg transition-all>
         <i m-2 class="logo i-add" @click="$refs.files.click()"></i>
         <i m-2 class="logo i-slider" @click="chatSettingShow=true"></i>
-        <textarea flex-1 h-auto p-3 resize-none border-none m-0 bg-gray-50 focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
+        <textarea flex-1 min-h-6 h-auto m-2 p-0 resize-none border-none overscroll-none bg-gray-50 font-sans focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
         <i m-2 class="logo i-mic" @click="alert('这个功能还没做')"></i>
     </form>
 </footer>

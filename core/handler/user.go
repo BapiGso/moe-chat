@@ -18,7 +18,7 @@ func User(c echo.Context) error {
 	case http.MethodPost:
 		var user database.User
 		err := database.DB.Get(&user,
-			"SELECT * FROM main.user WHERE email = ? ", c.Get("email"))
+			"SELECT * FROM user WHERE email = ? ", c.Get("email"))
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return err
 		}

@@ -4,12 +4,55 @@
     <meta charset="UTF-8">
     <title>MoeChat</title>
     <link rel="icon" type="image/jpg" href="/assets/img/default-avatar.png" />
-    <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
+    <script type="text/javascript" src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
+    <script type="text/javascript" src="/assets/js/purify.min.js"></script>
+    <script src="/assets/js/highlight.min.js"></script>
+    <script src="/assets/js/highlight.index.umd.js"></script>
+    <script src="/assets/js/marked.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/http_cdnjs.cloudflare.com_ajax_libs_highlight.js_11.9.0_styles_github.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.min.css">
+    <style>
+        [data-theme=light],
+        :root:not([data-theme=dark]) {
+            --pico-text-selection-color: #E7B6EE33;
+            --pico-font-family-sans-serif: Inter, system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+            --pico-font-size: 95%;
+            /* Original: 100% */
+            --pico-line-height: 1.1;
+            /* Original: 1.5 */
+            --pico-form-element-spacing-vertical: 0.5rem;
+            /* Original: 1rem */
+            --pico-form-element-spacing-horizontal: 1.0rem;
+            /* Original: 1.25rem */
+            --pico-border-radius: 0.375rem;
+            /* Original: 0.25rem */
+            --pico-typography-spacing-vertical: .5rem;
+            /* Original: 1rem */
+        }
+    </style>
     <script type="text/javascript" src="/assets/js/XhrSource.js" defer></script>
-    <script type="text/javascript" src="/assets/js/marked.min.js" defer></script>
+    <script type="text/javascript" src="/assets/js/alpine.min.js" defer></script>
+    <script>
+        const { Marked } = window.marked;
+        const { markedHighlight } = window.markedHighlight;
+        const marked = new Marked(
+            markedHighlight({
+                sanitize: true,
+                gfm: true,
+                langPrefix: 'hljs language-',
+                highlight(code, lang, info) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                },
+                renderer: {
+                    html(html) {
+                        return DOMPurify.sanitize(html); // 推荐使用 DOMPurify 进行安全过滤
+                    }
+                }
+            })
+        );
+    </script>
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
-    <script src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js" defer></script>
-
 </head>
 <body flex overflow-hidden h-screen m-0>
     <aside x-init="devFetch($el)" x-show="menuShow" flex flex-col w-15% justify-between bg-gray-50>
@@ -20,8 +63,8 @@
     </main>
 </body>
 <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('moechat', () => ({
+    document.addEventListener('alpine:init', event => {
+        Alpine.data('moechat', event => ({
             async init() {
                 await this.chats.post();
                 await this.chat.post();
@@ -33,7 +76,6 @@
                     el.innerHTML= await (await fetch(xText.split('"')[1])).text()
                 }
             },
-
             chat:{
                 data:{
                     messages: [],
@@ -76,7 +118,6 @@
             menuShow:true,
             chatSettingShow:false,
             ProviderModel: "",//下拉菜单的绑定，服务端不用
-            systemPrompt:"",//prompt
             userContent: {
                 systemPrompt:"",
                 max_tokens:4096,//上下文长度
@@ -88,7 +129,9 @@
                     const textarea = this.$refs.userContent;
                     if (!event.shiftKey) {
                         event.preventDefault()
-                        if (this.systemPrompt!=="" && this.chat.data.messages[0].role !== "system") {
+                        if (this.systemPrompt !== ""
+                            && this.chat.data.messages.length > 0
+                            && this.chat.data.messages[0].role !== "system") {
                             // Add system prompt as the first message in msgs
                             this.chat.data.messages.unshift({ role: "system", content: this.systemPrompt });
                         }
@@ -98,6 +141,7 @@
                         }
                         this.chat.data.messages.push({ content: textarea.value, role: "user" });
                         textarea.value = '';
+                        textarea.dispatchEvent(new Event('input'));
                         this.postCompletion();
                     }
                 },
