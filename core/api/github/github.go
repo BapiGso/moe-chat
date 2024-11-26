@@ -65,14 +65,14 @@ func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) 
 		return err
 	}
 	request := openai.ChatCompletionRequest{
-		Model:       completion.Model,
-		Messages:    openAIMessages,
-		MaxTokens:   completion.MaxTokens,
+		Model:    completion.Model,
+		Messages: openAIMessages,
+		//MaxCompletionTokens: completion.MaxTokens,
 		Temperature: completion.Temperature,
 		TopP:        completion.TopP,
 		Stream:      true,
 	}
-
+	//println(completion.MaxTokens)
 	c.resStream, err = client.CreateChatCompletionStream(ctx.Request().Context(), request)
 	return err
 }
@@ -87,7 +87,8 @@ func (c *Client) Read(p []byte) (n int, err error) {
 		return 0, fmt.Errorf("stream error: %w", err)
 	}
 
-	// Copy the content directly to the provided buffer
-	n = copy(p, response.Choices[0].Delta.Content)
+	if len(response.Choices) != 0 {
+		n = copy(p, response.Choices[0].Delta.Content)
+	}
 	return n, nil
 }

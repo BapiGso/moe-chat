@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "chatidtag" (
 );
 CREATE TABLE IF NOT EXISTS "config" (
     "key" VARCHAR(255) NOT NULL PRIMARY KEY,
-    "value" TEXT NOT NULL
+    "val" TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "document" (
 	"id"	INTEGER NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS "model" (
     "active"	INTEGER NOT NULL,
     "list"	TEXT NOT NULL,
     "created_at"	INTEGER NOT NULL
-    );
+);
 CREATE TABLE IF NOT EXISTS "prompt" (
 	"id"	INTEGER NOT NULL,
 	"command"	VARCHAR(255) NOT NULL,
@@ -148,6 +148,13 @@ CREATE TABLE IF NOT EXISTS "user" (
     "updated_at" INTEGER NOT NULL,
     "settings" TEXT NOT NULL
 );
+CREATE UNIQUE INDEX IF NOT EXISTS "user_email_idx" ON "user" ("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "model_provider_idx" ON "model" ("provider");
+CREATE UNIQUE INDEX IF NOT EXISTS "file_hash_idx" ON "file" ("hash");
+CREATE UNIQUE INDEX IF NOT EXISTS "config_key_idx" ON "config" ("key");
+CREATE UNIQUE INDEX IF NOT EXISTS "chat_id_idx" ON "chat" ("id");
+CREATE INDEX IF NOT EXISTS "chat_email_idx" ON "chat" ("email");
+
 
 CREATE UNIQUE INDEX IF NOT EXISTS "chatidtag_id" ON "chatidtag" (
 	"id"

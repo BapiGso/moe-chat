@@ -1,7 +1,7 @@
 <header min-h-14>
     <div flex flex-row align-center justify-between p-3 min-h-14 class="">
         <i class="logo i-edit" @click="chat.post('/chat')"></i>
-        <i class="logo i-align" @click="menuShow=false"></i>
+        <i class="logo i-align" @click="switchShow.menu=false"></i>
     </div>
     <form role="search" class="px-2" x-show="false">
         <input name="search" type="search" placeholder="Search" />
@@ -13,15 +13,112 @@
     <ul p-1 m-0 w-full>
         <template x-for="m in chats.data">
             <li x-text="m.Title" @click="await chat.post(`/chat/${m.ID}`)"
-                cursor-pointer list-none px-3 py-1 m-1 hover:bg-gray-100 rounded></li>
+                cursor-pointer list-none px-3 py-2 m-1 hover:bg-gray-100 rounded truncate></li>
         </template>
     </ul>
 </article>
 
-<footer flex min-h-14 justify-center items-center hover:bg-gray-100 rounded x-show="user.data!=={}">
+<footer flex min-h-14 justify-center items-center hover:bg-gray-100 rounded @click="alert('这个功能还没做')">
     <picture>
-        <source :srcset="user?.data?.ProfileImageURL" class="w-8 h-8 rounded-full" srcset="">
-        <img src="/assets/img/default-avatar.png" class="w-8 h-8 rounded-full">
+        <source :srcset="user?.data?.ProfileImageURL" w-8 h-8 rounded-full srcset="">
+        <img src="/assets/img/default-avatar.png" hidden w-8 h-8 rounded-full :block="user.data.ProfileImageURL===''?undefined:false">
     </picture>
     <span px-3 x-text="user?.data?.Email"></span>
 </footer>
+
+<template x-if="false" >
+
+
+<dialog x-show="switchShow.userSetting"
+        @click.self="switchShow.userSetting=false"
+        flex items-center justify-center m-0 p-0 w-full h-full backdrop-blur-sm bg-transparent border-none>
+    <article flex flex-col bg-white rounded-xl shadow-lg max-w-full w-[500px] transition-all duration-300 hover:shadow-xl>
+        <header flex justify-between items-center px-6 py-4 bg-gray-50 rounded-t-xl border-b border-gray-100>
+            <strong text-lg font-medium text-gray-800>用户设置</strong>
+            <a @click.prevent="switchShow.userSetting=false"
+               text-gray-400 hover:text-gray-600 transition-colors cursor-pointer>
+                关闭
+            </a>
+        </header>
+
+
+        <form flex flex-col gap-6 p-6>
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>头像设置</span>
+                <div flex items-center gap-4>
+                    <img :src="userAvatar" w-16 h-16 rounded-full object-cover>
+                    <input type="file"
+                           @change="handleAvatarUpload"
+                           accept="image/*"
+                           hidden
+                           id="avatarUpload">
+                    <button type="button"
+                            @click="$refs.avatarUpload.click()"
+                            bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors>
+                        上传头像
+                    </button>
+                </div>
+            </label>
+
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>语言选择</span>
+                <select
+                        x-model="userLanguage"
+                        mt-1 p-3 border border-gray-200 rounded-lg shadow-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-500>
+                    <option value="zh-CN">简体中文</option>
+                    <option value="en-US">English</option>
+                    <option value="ja-JP">日本語</option>
+                    <option value="ko-KR">한국어</option>
+                </select>
+            </label>
+
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>导出对话记录</span>
+                <div flex gap-4>
+                    <button type="button"
+                            @click="exportChatHistory('txt')"
+                            bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors>
+                        导出为TXT
+                    </button>
+                    <button type="button"
+                            @click="exportChatHistory('json')"
+                            bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors>
+                        导出为JSON
+                    </button>
+                </div>
+            </label>
+
+
+            <label flex flex-col gap-2>
+                <span text-sm font-medium text-gray-700>文件管理</span>
+                <div flex flex-col gap-2>
+                    <div v-for="file in userFiles"
+                         flex justify-between items-center bg-gray-100 p-3 rounded-lg>
+                        <span> file.name </span>
+                        <div flex gap-2>
+                            <button type="button"
+                                    @click="previewFile(file)"
+                                    text-blue-500 hover:text-blue-700>
+                                预览
+                            </button>
+                            <button type="button"
+                                    @click="deleteFile(file)"
+                                    text-red-500 hover:text-red-700>
+                                删除
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button"
+                            @click="uploadNewFile"
+                            bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors>
+                        上传新文件
+                    </button>
+                </div>
+            </label>
+        </form>
+    </article>
+</dialog>
+</template>

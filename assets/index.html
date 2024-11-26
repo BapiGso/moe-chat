@@ -5,12 +5,13 @@
     <title>MoeChat</title>
     <link rel="icon" type="image/jpg" href="/assets/img/default-avatar.png" />
     <script type="text/javascript" src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
+
     <script type="text/javascript" src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/highlight.min.js"></script>
     <script src="/assets/js/highlight.index.umd.js"></script>
     <script src="/assets/js/marked.min.js"></script>
     <link rel="stylesheet" href="/assets/css/http_cdnjs.cloudflare.com_ajax_libs_highlight.js_11.9.0_styles_github.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.min.css">
+    <link rel="stylesheet" href="/assets/css/pico.conditional.min.css">
     <style>
         [data-theme=light],
         :root:not([data-theme=dark]) {
@@ -35,27 +36,23 @@
     <script>
         const { Marked } = window.marked;
         const { markedHighlight } = window.markedHighlight;
+
         const marked = new Marked(
             markedHighlight({
-                sanitize: true,
                 gfm: true,
                 langPrefix: 'hljs language-',
+                escape: true,
                 highlight(code, lang, info) {
                     const language = hljs.getLanguage(lang) ? lang : 'plaintext';
                     return hljs.highlight(code, { language }).value;
                 },
-                renderer: {
-                    html(html) {
-                        return DOMPurify.sanitize(html); // 推荐使用 DOMPurify 进行安全过滤
-                    }
-                }
-            })
+            }),
         );
     </script>
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
 </head>
 <body flex overflow-hidden h-screen m-0>
-    <aside x-init="devFetch($el)" x-show="menuShow" flex flex-col w-15% justify-between bg-gray-50>
+    <aside x-init="devFetch($el)" x-show="switchShow.menu" flex flex-col w-15% justify-between bg-gray-50>
         {{template "aside.html"}}
     </aside>
     <main x-init="devFetch($el)" flex flex-col flex-auto>
@@ -103,7 +100,8 @@
             },
             files:{
                 messages:[],
-                async post(){
+                async post(event){
+                    console.log(event.target)
                     this.messages = (await (await fetch('/file', { method: 'POST' ,body: new FormData(event.target.form)})).json()) || [];
                     event.target.form.reset()
                 }
@@ -115,23 +113,25 @@
                     this.data = (await (await fetch('/user', { method: 'POST' })).json()) || {};
                 }
             },
-            menuShow:true,
-            chatSettingShow:false,
-            ProviderModel: "",//下拉菜单的绑定，服务端不用
+            switchShow:{
+                menu:true,
+                chatSetting:false,
+                userSetting:false
+            },
+            ProviderModel: localStorage.ProviderModel||'',//下拉菜单的绑定，服务端不用
+            systemPrompt:localStorage.systemPrompt||"",
+            max_tokens:localStorage.max_tokens||4096,//上下文长度
+            temperature:localStorage.temperature||0.7,//温度
+            topk:localStorage.topk||40,//topk
+            topp:localStorage.topp||0.9,//topp
             userContent: {
-                systemPrompt:"",
-                max_tokens:4096,//上下文长度
-                temperature:0.7,//温度
-                topk:40,//topk
-                topp:0.9,//topp
                 'x-ref': 'userContent',
                 '@keydown.enter'(event) {
                     const textarea = this.$refs.userContent;
                     if (!event.shiftKey) {
                         event.preventDefault()
-                        if (this.systemPrompt !== ""
-                            && this.chat.data.messages.length > 0
-                            && this.chat.data.messages[0].role !== "system") {
+                        console.log(this.systemPrompt)
+                        if (this.systemPrompt !== "" && this.chat.data.messages[0]?.role !== "system") {
                             // Add system prompt as the first message in msgs
                             this.chat.data.messages.unshift({ role: "system", content: this.systemPrompt });
                         }
@@ -139,7 +139,8 @@
                             this.chat.data.messages.push({ content: "", role: "user" ,files:this.files.messages});
                             this.files.messages=[]
                         }
-                        this.chat.data.messages.push({ content: textarea.value, role: "user" });
+                        //todo html硬编码
+                        this.chat.data.messages.push({ content:textarea.value, role: "user" });
                         textarea.value = '';
                         textarea.dispatchEvent(new Event('input'));
                         this.postCompletion();
@@ -159,10 +160,10 @@
                     provider : this.ProviderModel.split(':')[0], // 冒号前的部分
                     model :this.ProviderModel.split(':').slice(1).join(':'),// 冒号后的部分
                     messages: this.chat.data.messages,
-                    max_tokens:this.userContent.max_tokens,//上下文长度
-                    temperature:this.userContent.temperature,//温度
-                    topk:this.userContent.topk,//topk
-                    topp:this.userContent.topp,//topp
+                    max_tokens:this.max_tokens,//上下文长度
+                    temperature:this.temperature,//温度
+                    topk:this.topk,//topk
+                    topp:this.topp,//topp
                 }
                 const xs = XhrSource('/chat/completion', {
                     method: 'POST',
@@ -184,11 +185,16 @@
                 });
                 xs.addEventListener('close', async e => {
                     //流式响应结束后在这put /chat
+                    //todo ai命名标题
+                    this.chat.data.Title=this.chat.data.messages[0].content;
                     let res=await this.chat.put(this.chat.data)
                     history.replaceState(null, '', `/chat/${res.id}`);
                     console.log(`SSE connection closed,replaced history with ${res.id}`);
                     await this.chats.post()
                 });
+                xs.addEventListener('error', async e=> {
+                    //todo:错误处理
+                }, false);
             }
         }))
     })

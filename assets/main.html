@@ -1,11 +1,12 @@
 <header flex min-h-14 items-center justify-between px-3 w-full>
     <div flex align-center>
-        <i class="logo i-align mx-2"  @click="menuShow=true" x-show="!menuShow"></i>
-        <select my-0 border-none bg-white focus:outline-none focus:ring-0 aria-label x-model="ProviderModel">
+        <i class="logo i-align mx-2"  @click="switchShow.menu=true" x-show="!switchShow.menu"></i>
+        <select my-0 border-none bg-white focus:outline-none focus:ring-0 aria-label x-model="ProviderModel"  @change="localStorage.ProviderModel=$el.value">
+            <option value :select="!localStorage.ProviderModel" disabled>select model</option>
             <template x-for="m in await (await fetch('/model',{method:'POST'})).json()">
                 <optgroup :label="m.Provider" label="">
                     <template x-for="n in m?.List?.split(',')">
-                        <option :value=`${m.Provider}:${n}` x-text="n"></option>
+                        <option :selected="localStorage.ProviderModel===`${m.Provider}:${n}`" :value=`${m.Provider}:${n}` x-text="n"></option>
                     </template>
                 </optgroup>
             </template>
@@ -30,9 +31,10 @@
                     </template>
                 </div>
             </template>
-            <template x-if="!m.files">
+            <template x-if="!m.files && m.content">
             <!-- 再渲染消息内容 -->
                 <div rounded max-w-xl p-3 bg-blue-50 class="pico"
+                     :hidden="m.role==='system'?undefined:false"
                      :flex-row-reverse="m.role === 'user'?undefined:false"
                      :bg-purple-50="m.role === 'user'?undefined:false"
                      x-html="marked.parse(m.content)">
@@ -57,28 +59,28 @@
             >
                 <div x-show="file.showDelete"
                      text-xs  absolute rounded inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm text-white font-bold>
-                    Click to delete
+                    Click to del
                 </div>
             </div>
         </template>
-        <input type="file" name="files" multiple @change="files.post()" x-ref="files" style="display: none">
+        <input type="file" name="files" multiple @change="files.post($event)" x-ref="files" hidden>
     </form>
-<!--    todo fileContent 输入框增高-->
+
     <form flex flex-row justify-between items-end rounded-3xl m-b-5 w-80% bg-gray-50 shadow-sm hover:shadow-lg transition-all>
         <i m-2 class="logo i-add" @click="$refs.files.click()"></i>
-        <i m-2 class="logo i-slider" @click="chatSettingShow=true"></i>
+        <i m-2 class="logo i-slider" @click="switchShow.chatSetting=true"></i>
         <textarea flex-1 min-h-6 h-auto m-2 p-0 resize-none border-none overscroll-none bg-gray-50 font-sans focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
         <i m-2 class="logo i-mic" @click="alert('这个功能还没做')"></i>
     </form>
 </footer>
 
-<dialog x-show="chatSettingShow"
-        @click.self="chatSettingShow=false"
+<dialog x-show="switchShow.chatSetting"
+        @click.self="switchShow.chatSetting=false"
         flex items-center justify-center m-0 p-0 w-full h-full backdrop-blur-sm bg-transparent border-none>
     <article flex flex-col bg-white rounded-xl shadow-lg max-w-full w-[500px] transition-all duration-300 hover:shadow-xl>
         <header flex justify-between items-center px-6 py-4 bg-gray-50 rounded-t-xl border-b border-gray-100>
         <strong text-lg font-medium text-gray-800>高级对话设置</strong>
-        <a @click.prevent="chatSettingShow=false"
+        <a @click.prevent="switchShow.chatSetting=false"
            text-gray-400 hover:text-gray-600 transition-colors cursor-pointer>
             关闭
         </a>
@@ -89,7 +91,8 @@
                 <span text-sm font-medium text-gray-700>系统提示词 (System Prompt)</span>
                 <textarea
                         rows="3"
-                        x-model="userContent.systemPrompt"
+                        x-model="systemPrompt"
+                        @change="localStorage.symtemPrompt=$el.value"
                         placeholder="输入系统提示词 (Prompt)"
                         mt-1 p-3 border border-gray-200 rounded-lg shadow-sm
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
@@ -104,7 +107,7 @@
                        min="0"
                        max="4096"
                        step="1"
-                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       @input="localStorage.symtemPrompt=$el.value"
                        w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                 before:absolute before:h-full before:bg-blue-500 before:rounded-full>
@@ -113,11 +116,11 @@
             <label flex flex-col gap-2>
                 <span text-sm font-medium text-gray-700>温度 (Temperature)</span>
                 <input type="range"
-                       x-model="userContent.temperature"
+                       x-model="temperature"
                        min="0"
                        max="1"
                        step="0.1"
-                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       @input="localStorage.symtemPrompt=$el.value"
                        w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                 before:absolute before:h-full before:bg-blue-500 before:rounded-full>
@@ -126,11 +129,11 @@
             <label flex flex-col gap-2>
                 <span text-sm font-medium text-gray-700>Top K</span>
                 <input type="range"
-                       x-model="userContent.topk"
+                       x-model="topk"
                        min="0"
                        max="1"
                        step="0.01"
-                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       @input="localStorage.symtemPrompt=$el.value"
                        w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                 before:absolute before:h-full before:bg-blue-500 before:rounded-full>
@@ -139,11 +142,11 @@
             <label flex flex-col gap-2>
                 <span text-sm font-medium text-gray-700>Top P</span>
                 <input type="range"
-                       x-model="userContent.topp"
+                       x-model="topp"
                        min="0"
                        max="1"
                        step="0.01"
-                       @input="$el.setAttribute('data-tooltip', $el.value)"
+                       @input="localStorage.symtemPrompt=$el.value"
                        w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer
                        focus:outline-none focus:ring-2 focus:ring-blue-500
                 before:absolute before:h-full before:bg-blue-500 before:rounded-full>

@@ -6,18 +6,18 @@ import (
 	"net/http"
 )
 
-func AdminSetting(c echo.Context) error {
+func AdminConfig(c echo.Context) error {
 	switch c.Request().Method {
 	case http.MethodPost:
-		var config []database.Config
-		err := database.DB.Select(&config, `SELECT * FROM config`)
+		var config database.Config
+		err := database.DB.Get(&config, `SELECT * FROM config WHERE key = ?`, c.QueryParam("key"))
 		if err != nil {
 			return err
 		}
 		return c.JSON(http.StatusOK, config)
 	case http.MethodPut:
-		exec, err := database.DB.Exec(`INSERT OR REPLACE INTO config (key,value)
-		VALUES (?,?)`, c.QueryParam("key"), c.QueryParam("value"))
+		exec, err := database.DB.Exec(`INSERT OR REPLACE INTO config (key,val)
+		VALUES (?,?)`, c.QueryParam("key"), c.QueryParam("val"))
 		if err != nil {
 			return err
 		}

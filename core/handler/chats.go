@@ -33,7 +33,7 @@ func Chats(c echo.Context) error {
 	case http.MethodPost:
 		var chats []database.Chat
 		err := database.DB.Select(&chats,
-			"SELECT * FROM chat WHERE email = ? ", c.Get("email"))
+			"SELECT * FROM chat WHERE email = ? ORDER BY ROWID DESC ", c.Get("email"))
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return err
 		}

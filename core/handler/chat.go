@@ -16,7 +16,7 @@ func Chat(c echo.Context) error {
 	req := &struct {
 		ID        uuid.UUID `param:"id" json:"id"`
 		Email     string
-		Title     string
+		Title     string `json:"Title"`
 		ShareID   string
 		Archived  int
 		CreatedAt time.Time
@@ -42,6 +42,8 @@ func Chat(c echo.Context) error {
 		}
 		return c.JSON(http.StatusOK, chat)
 	case http.MethodPut: //用于更新会话内容
+		req.Email = c.Get("email").(string)
+		req.UpdatedAt = time.Now()
 		_, err := database.DB.NamedExec(`INSERT OR REPLACE INTO
 			 chat (id, email, title, share_id, archived, 
 			       created_at, updated_at, messages, folder_id)

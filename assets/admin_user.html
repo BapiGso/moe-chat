@@ -1,6 +1,8 @@
 
     <label>
-        <input name="terms" type="checkbox" role="switch" />
+        <input name="terms" type="checkbox" role="switch"
+               :checked="Boolean(Number(await postConfig('enableRegister')))"
+               @change="putConfig('enableRegister',Number($el.checked))">
         允许用户注册
     </label>
     <table>

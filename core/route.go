@@ -50,6 +50,7 @@ func (c *Core) Route() {
 	admin.Any("/user", handler.AdminUser)
 	admin.Any("/model", handler.AdminModel)
 	admin.Any("/database", handler.AdminDatabase)
+	admin.Any("/config", handler.AdminConfig)
 	showChatAddr()
 	//c.e.StartTLS(viper.GetString("panel.port"), []byte(certPEM), []byte(keyPEM))
 	c.e.Start(":8080")

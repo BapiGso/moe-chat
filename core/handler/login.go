@@ -16,7 +16,7 @@ func Login(c echo.Context) error {
 	case http.MethodGet:
 		return c.Render(http.StatusOK, "login.html", nil)
 	case http.MethodPost:
-		user := &database.User{}
+		user := new(database.User)
 		req := &struct {
 			Action string `form:"action"`
 			Email  string `form:"email" validate:"email"`
@@ -29,6 +29,11 @@ func Login(c echo.Context) error {
 			return err
 		}
 		if req.Action == "register" {
+			var config database.Config
+			err := database.DB.Get(&config, `SELECT * FROM config WHERE key = 'enableRegister'`)
+			if err != nil || config.Val != "1" {
+				return c.JSON(http.StatusUnauthorized, "管理员未开启注册")
+			}
 			hash, err := bcrypt.GenerateFromPassword([]byte(req.Pwd), bcrypt.DefaultCost)
 			if err != nil {
 				return err
@@ -43,23 +48,26 @@ func Login(c echo.Context) error {
 				Settings:        "",
 			}
 			_, err = database.DB.NamedExec(`
-    INSERT INTO user (  email, password, level, profile_image_url, created_at, updated_at, settings)
+    INSERT INTO user ( email, password, level, profile_image_url, created_at, updated_at, settings)
     VALUES (  :email,:password, :level,:profile_image_url, :created_at, :updated_at, :settings)
 `, user)
 			if err != nil {
-				return err
+				return c.JSON(http.StatusUnauthorized, "邮箱已被注册")
 			}
-			return c.JSON(http.StatusOK, "success")
+			return c.JSON(http.StatusOK, "注册成功")
 		}
 		if req.Action == "login" {
 			if err := database.DB.Get(user, `SELECT * FROM user WHERE email = ?`, req.Email); err != nil {
 				return err
 			}
 			if err := bcrypt.CompareHashAndPassword(user.Password, []byte(req.Pwd)); err == nil {
+				if user.Level == database.LevelPending {
+					return c.NoContent(418)
+				}
 				token, err := jwt.NewWithClaims(jwt.SigningMethodHS256,
 					&jwt.RegisteredClaims{
 						Subject:   user.Email,
-						ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)), //过期日期设置7天
+						ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 14)), //过期日期设置14天
 
 					},
 				).SignedString([]byte(strconv.Itoa(os.Getpid())))
@@ -71,7 +79,7 @@ func Login(c echo.Context) error {
 					Value:    token,
 					HttpOnly: true,
 				})
-				return c.Redirect(http.StatusFound, "/c/")
+				return c.Redirect(http.StatusFound, "/chat")
 			} else {
 				return echo.ErrUnauthorized
 			}

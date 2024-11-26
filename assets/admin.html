@@ -77,6 +77,15 @@
                     el.innerHTML= await (await fetch(xText.split('"')[1])).text()
                 }
             },
+            async postConfig(key){
+                let res =  await (await fetch(`/admin/config?key=${key}`,{method:"POST"})).json()
+                // console.log(res.Val)
+                return res.Val
+            },
+            async putConfig(key,val){
+                let res = await (await fetch(`/admin/config?key=${key}&val=${val}`,{method:"PUT"})).json()
+                return res
+            },
             async updateUser(email, level){
                 let formData = new FormData();
                 formData.append('email', email);

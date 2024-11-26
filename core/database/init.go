@@ -19,7 +19,7 @@ var DB = func() *sqlx.DB {
 	db := sqlx.MustConnect("sqlite", "moechat.db")
 	//读取sql文件创建表
 	if _, err := db.Exec(sqlTable); err != nil {
-		slog.Error("创建表结构失败")
+		slog.Error("创建表结构失败", err)
 	}
 	return db
 }()

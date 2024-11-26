@@ -219,37 +219,109 @@
             cursor: pointer;
             opacity: .8;
         }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 1000;
+        }
 
+        .notification.success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.5);
+        }
+
+        .notification.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.5);
+        }
+
+        .notification.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+<div id="notification" class="notification"></div>
+<script>
+    // 创建通知函数
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type} visible`;
+
+        setTimeout(() => {
+            notification.className = 'notification';
+        }, 3000);
+    }
+
+    // 表单提交处理
+    function handleSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch('/login', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.status === 302) {
+                    // 后端返回 302 状态码，进行跳转
+                    window.location.href = response.headers.get('Location');
+                } else {
+                    // 解析 JSON 响应
+                    return response.json();
+                }
+            })
+            .then(data => {
+                // 显示后端返回的消息
+                showNotification(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('网络错误', 'error');
+            });
+    }
+</script>
 <article>
     <section>
         <h1>WELCOME</h1>
-        <p>SMOE!</p>
+        <p>Moe-Chat!</p>
         <img src="/assets/img/waoku.webp" alt="">
     </section>
-    <form action="" method="post">
+    <form action="" method="post" onsubmit="handleSubmit(event)">
         <h1>Register</h1>
         <input type="hidden" name="action" value="register">
         <input type="email" placeholder="email" name="email" aria-label>
         <input type="password" placeholder="password" name="pwd" aria-label>
         <fieldset role="group">
             <input type="submit" value="创建账户">
-            <p onclick="mySwitch()">SWITCH</p>
+            <p onclick="mySwitch()">前去登录</p>
         </fieldset>
     </form>
-    <form action="" method="post">
+    <form action="" method="post" onsubmit="handleSubmit(event)">
         <h1>Login</h1>
         <input type="hidden" name="action" value="login">
         <input type="email" placeholder="email" name="email" aria-label>
         <input type="password" placeholder="password" name="pwd" aria-label>
         <fieldset role="group">
             <input type="submit" value="登录">
-            <!-- 绑定点击事件 -->
-            <p onclick="mySwitch()">SWITCH</p>
+            <p onclick="mySwitch()">没有账号？注册</p>
         </fieldset>
-    </form >
+    </form>
 
 </article>
 <script>

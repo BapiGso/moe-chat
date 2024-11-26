@@ -87,7 +87,8 @@ func (c *Client) Read(p []byte) (n int, err error) {
 		return 0, fmt.Errorf("stream error: %w", err)
 	}
 
-	// Copy the content directly to the provided buffer
-	n = copy(p, response.Choices[0].Delta.Content)
+	if len(response.Choices) != 0 {
+		n = copy(p, response.Choices[0].Delta.Content)
+	}
 	return n, nil
 }

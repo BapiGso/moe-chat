@@ -18,10 +18,6 @@ func Completion(c echo.Context) error {
 	}
 	switch c.Request().Method {
 	case http.MethodPost:
-		w := c.Response()
-		w.Header().Set("Content-Type", "text/event-stream")
-		w.Header().Set("Cache-Control", "no-cache")
-		w.Header().Set("Connection", "keep-alive")
 		apiAdapter, err := api.New(req.Provider)
 		if err != nil {
 			return err
@@ -29,6 +25,10 @@ func Completion(c echo.Context) error {
 		if err := apiAdapter.CreateResStream(c, req); err != nil {
 			return err
 		}
+		w := c.Response()
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
 		buf := make([]byte, 512)
 		for {
 			select {
