@@ -24,7 +24,7 @@ var JWT, _ = echojwt.Config{
 		return c.Redirect(http.StatusFound, "/login")
 	},
 	SigningKey:  []byte(strconv.Itoa(os.Getpid())),
-	TokenLookup: "cookie:moechat_token,query:moechat_token",
+	TokenLookup: "cookie:moe-chat_token",
 	Skipper: func(c echo.Context) bool {
 		skipPath := c.Path() == "/login" || c.Path() == "/register" || strings.HasPrefix(c.Path(), "/assets/")
 		if debug {

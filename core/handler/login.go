@@ -45,7 +45,7 @@ func Login(c echo.Context) error {
 				return err
 			}
 			c.SetCookie(&http.Cookie{
-				Name:     "moechat_token",
+				Name:     "moe-chat_token",
 				Value:    token,
 				HttpOnly: true,
 			})
