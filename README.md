@@ -9,7 +9,19 @@
 > [!WARNING]  
 > This is a VERY early repo. Discord coming soon!
 
+## INSTALL
 
+```bash
+bash <(curl -s https://raw.githubusercontent.com/BapiGso/moe-chat/master/shell/install_moe-chat.sh)
+```
+
+Or, download the appropriate version for your platform from the [Releases](https://github.com/BapiGso/moe-chat/releases) page and run it.
+
+## UNINSTALL
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/BapiGso/moe-chat/master/shell/uninstall_moe-chat.sh)
+```
 
 # About
 
