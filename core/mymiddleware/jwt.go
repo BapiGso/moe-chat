@@ -1,6 +1,7 @@
 package mymiddleware
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -19,10 +20,11 @@ var JWT, _ = echojwt.Config{
 		c.Set("email", issuer)
 	},
 	ErrorHandler: func(c echo.Context, err error) error {
+		fmt.Println(err)
 		return c.Redirect(http.StatusFound, "/login")
 	},
 	SigningKey:  []byte(strconv.Itoa(os.Getpid())),
-	TokenLookup: "cookie:moechat_token ,query:moechat_token",
+	TokenLookup: "cookie:moechat_token,query:moechat_token",
 	Skipper: func(c echo.Context) bool {
 		skipPath := c.Path() == "/login" || c.Path() == "/register" || strings.HasPrefix(c.Path(), "/assets/")
 		if debug {

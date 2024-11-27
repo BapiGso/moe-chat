@@ -19,11 +19,7 @@ func Register(c echo.Context) error {
 	if err := c.Validate(req); err != nil {
 		return err
 	}
-	var config database.Config
-	err := database.DB.Get(&config, `SELECT * FROM config WHERE key = 'enableRegister'`)
-	if err != nil || config.Val != "1" {
-		return c.JSON(http.StatusUnauthorized, "管理员未开启注册")
-	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Pwd), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -46,6 +42,12 @@ func Register(c echo.Context) error {
 
 	if count == 0 {
 		user.Level = database.LevelAdmin
+	} else {
+		var config database.Config
+		err = database.DB.Get(&config, `SELECT * FROM config WHERE key = 'enableRegister'`)
+		if err != nil || config.Val == "0" && count != 0 {
+			return c.JSON(http.StatusUnauthorized, "管理员未开启注册")
+		}
 	}
 
 	_, err = database.DB.NamedExec(`

@@ -276,8 +276,9 @@
                     body: new FormData(form)
                 });
                 // console.log(response.status)
-                if (response.status === 202) {
-                    window.location.href = await response.json();
+                if (response.status === 204) {
+                    console.log(123)
+                    window.location.href = '/chat'
                     return;
                 }
                 const data = await response.json();

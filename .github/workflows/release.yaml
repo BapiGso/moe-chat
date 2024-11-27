@@ -19,30 +19,30 @@ jobs:
 
       - name: Build
         run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64   go build -o moechat_linux_amd64
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm64   go build -o moechat_linux_arm64
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm     go build -o moechat_linux_arm
-          CGO_ENABLED=0 GOOS=linux GOARCH=s390x   go build -o moechat_linux_s390x
-          CGO_ENABLED=0 GOOS=linux GOARCH=riscv64 go build -o moechat_linux_riscv64
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o moechat_windows_amd64.exe
-          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o moechat_windows_arm64.exe
-          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64  go build -o moechat_mac_amd64
-          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64  go build -o moechat_mac_arm64
-          CGO_ENABLED=0 GOOS=freebsd GOARCH=amd64 go build -o moechat_freebsd_amd64
-          CGO_ENABLED=0 GOOS=freebsd GOARCH=arm   go build -o moechat_freebsd_arm
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64   go build -o moe-chat_linux_amd64
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64   go build -o moe-chat_linux_arm64
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm     go build -o moe-chat_linux_arm
+          CGO_ENABLED=0 GOOS=linux GOARCH=s390x   go build -o moe-chat_linux_s390x
+          CGO_ENABLED=0 GOOS=linux GOARCH=riscv64 go build -o moe-chat_linux_riscv64
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o moe-chat_windows_amd64.exe
+          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o moe-chat_windows_arm64.exe
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64  go build -o moe-chat_mac_amd64
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64  go build -o moe-chat_mac_arm64
+          CGO_ENABLED=0 GOOS=freebsd GOARCH=amd64 go build -o moe-chat_freebsd_amd64
+          CGO_ENABLED=0 GOOS=freebsd GOARCH=arm   go build -o moe-chat_freebsd_arm
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with: # 将下述可执行文件 release 上去
           files: |
-            moechat_linux_amd64
-            moechat_linux_arm64
-            moechat_linux_arm
-            moechat_linux_s390x
-            moechat_linux_riscv64
-            moechat_windows_amd64.exe
-            moechat_windows_arm64.exe
-            moechat_mac_amd64
-            moechat_mac_arm64
-            moechat_freebsd_amd64
-            moechat_freebsd_arm
+            moe-chat_linux_amd64
+            moe-chat_linux_arm64
+            moe-chat_linux_arm
+            moe-chat_linux_s390x
+            moe-chat_linux_riscv64
+            moe-chat_windows_amd64.exe
+            moe-chat_windows_arm64.exe
+            moe-chat_mac_amd64
+            moe-chat_mac_arm64
+            moe-chat_freebsd_amd64
+            moe-chat_freebsd_arm

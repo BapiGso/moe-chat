@@ -49,7 +49,7 @@ func Login(c echo.Context) error {
 				Value:    token,
 				HttpOnly: true,
 			})
-			return c.JSON(http.StatusAccepted, "/chat")
+			return c.NoContent(http.StatusNoContent)
 		} else {
 			return c.JSON(http.StatusUnauthorized, "用户名或密码不正确")
 		}
