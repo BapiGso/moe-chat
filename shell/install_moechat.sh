@@ -33,7 +33,7 @@ case "$ARCH" in
         GOARCH="riscv64"
         ;;
     *)
-        echo "不支持的系统架构: $ARCH，请手动下载适用于您系统的 gopanel 版本。"
+        echo "不支持的系统架构: $ARCH，请手动下载适用于您系统的 moe-chat 版本。"
         exit 1
         ;;
 esac
@@ -43,32 +43,32 @@ OS_LOWER=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
 
 # 检查是否支持的操作系统
 if [ "$OS" != "Linux" ] && [ "$OS" != "FreeBSD" ] && [ "$OS" != "Darwin" ]; then
-    echo "不支持的操作系统: $OS，请手动下载适用于您系统的 gopanel 版本。"
+    echo "不支持的操作系统: $OS，请手动下载适用于您系统的 moe-chat 版本。"
     exit 1
 fi
 
 # 设置下载链接
-DOWNLOAD_URL="https://github.com/BapiGso/gopanel/releases/latest/download/gopanel_${OS_LOWER}_${GOARCH}"
+DOWNLOAD_URL="https://github.com/BapiGso/moe-chat/releases/latest/download/moe-chat_${OS_LOWER}_${GOARCH}"
 
-# 下载 gopanel
-sudo wget "$DOWNLOAD_URL" -O /usr/local/bin/gopanel
+# 下载 moe-chat
+sudo wget "$DOWNLOAD_URL" -O /usr/local/bin/moe-chat
 
 # 检查下载是否成功
 if [ $? -ne 0 ]; then
-    echo "下载 gopanel 失败，请检查网络连接或手动下载。"
+    echo "下载 moe-chat 失败，请检查网络连接或手动下载。"
     exit 1
 fi
 
 # 赋予执行权限
-sudo chmod +x /usr/local/bin/gopanel
+sudo chmod +x /usr/local/bin/moe-chat
 
 # 创建工作目录
-WORKDIR="/opt/gopanel"
+WORKDIR="/opt/moe-chat"
 sudo mkdir -p "$WORKDIR"
 
 # 创建服务文件
 if [ "$OS" = "Linux" ]; then
-    cat << EOF | sudo tee /etc/systemd/system/gopanel.service > /dev/null
+    cat << EOF | sudo tee /etc/systemd/system/moe-chat.service > /dev/null
 [Unit]
 Description=GoPanel Service
 After=network.target
@@ -76,7 +76,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/local/bin/gopanel -w ${WORKDIR}
+ExecStart=/usr/local/bin/moe-chat -w ${WORKDIR}
 Restart=on-failure
 WorkingDirectory=${WORKDIR}
 
@@ -87,60 +87,60 @@ EOF
     # 重新加载 systemd 配置
     sudo systemctl daemon-reload
 
-    # 启用并启动 gopanel 服务
-    sudo systemctl enable gopanel
-    sudo systemctl start gopanel
+    # 启用并启动 moe-chat 服务
+    sudo systemctl enable moe-chat
+    sudo systemctl start moe-chat
 
     # 检查服务状态
     sleep 2
-    sudo systemctl status gopanel
+    sudo systemctl status moe-chat
 elif [ "$OS" = "FreeBSD" ]; then
-    cat << EOF | sudo tee /usr/local/etc/rc.d/gopanel > /dev/null
+    cat << EOF | sudo tee /usr/local/etc/rc.d/moe-chat > /dev/null
 #!/bin/sh
 
-# PROVIDE: gopanel
+# PROVIDE: moe-chat
 # REQUIRE: DAEMON NETWORKING
 # KEYWORD: shutdown
 
 . /etc/rc.subr
 
-name="gopanel"
+name="moe-chat"
 rcvar="\${name}_enable"
 
 load_rc_config \${name}
 
-: \${gopanel_enable:="NO"}
-: \${gopanel_user:="root"}
+: \${moe-chat_enable:="NO"}
+: \${moe-chat_user:="root"}
 
-command="/usr/local/bin/gopanel"
+command="/usr/local/bin/moe-chat"
 command_args="-w ${WORKDIR}"
 
 run_rc_command "\$1"
 EOF
 
     # 赋予 rc.d 脚本执行权限
-    sudo chmod +x /usr/local/etc/rc.d/gopanel
+    sudo chmod +x /usr/local/etc/rc.d/moe-chat
 
-    # 启用并启动 gopanel 服务
-    sudo sysrc gopanel_enable=YES
-    sudo service gopanel start
+    # 启用并启动 moe-chat 服务
+    sudo sysrc moe-chat_enable=YES
+    sudo service moe-chat start
 
     # 检查服务状态
     sleep 2
-    sudo service gopanel status
+    sudo service moe-chat status
 elif [ "$OS" = "Darwin" ]; then
     # 创建 LaunchDaemon
-    PLIST_PATH="/Library/LaunchDaemons/com.gopanel.service.plist"
+    PLIST_PATH="/Library/LaunchDaemons/com.moe-chat.service.plist"
     cat << EOF | sudo tee "$PLIST_PATH" > /dev/null
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.gopanel.service</string>
+    <string>com.moe-chat.service</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/local/bin/gopanel</string>
+        <string>/usr/local/bin/moe-chat</string>
         <string>-w</string>
         <string>${WORKDIR}</string>
     </array>
@@ -149,9 +149,9 @@ elif [ "$OS" = "Darwin" ]; then
     <key>KeepAlive</key>
     <true/>
     <key>StandardErrorPath</key>
-    <string>/var/log/gopanel.err</string>
+    <string>/var/log/moe-chat.err</string>
     <key>StandardOutPath</key>
-    <string>/var/log/gopanel.out</string>
+    <string>/var/log/moe-chat.out</string>
     <key>WorkingDirectory</key>
     <string>${WORKDIR}</string>
 </dict>
@@ -167,7 +167,7 @@ EOF
 
     # 检查服务状态
     sleep 2
-    sudo launchctl print system/com.gopanel.service
+    sudo launchctl print system/com.moe-chat.service
 else
     echo "不支持的操作系统: $OS，无法启动服务。"
     exit 1

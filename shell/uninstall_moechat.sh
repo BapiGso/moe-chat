@@ -3,18 +3,18 @@
 # 检查操作系统
 OS=$(uname -s)
 
-# 停止并禁用 gopanel 服务
+# 停止并禁用 moe-chat 服务
 if [ "$OS" = "Linux" ]; then
-    sudo systemctl stop gopanel
-    sudo systemctl disable gopanel
-    sudo rm /etc/systemd/system/gopanel.service
+    sudo systemctl stop moe-chat
+    sudo systemctl disable moe-chat
+    sudo rm /etc/systemd/system/moe-chat.service
     sudo systemctl daemon-reload
 elif [ "$OS" = "FreeBSD" ]; then
-    sudo service gopanel stop
-    sudo sysrc gopanel_enable=NO
-    sudo rm /usr/local/etc/rc.d/gopanel
+    sudo service moe-chat stop
+    sudo sysrc moe-chat_enable=NO
+    sudo rm /usr/local/etc/rc.d/moe-chat
 elif [ "$OS" = "Darwin" ]; then
-    PLIST_PATH="/Library/LaunchDaemons/com.gopanel.service.plist"
+    PLIST_PATH="/Library/LaunchDaemons/com.moe-chat.service.plist"
     if [ -f "$PLIST_PATH" ]; then
         sudo launchctl unload -w "$PLIST_PATH"
         sudo rm "$PLIST_PATH"
@@ -26,14 +26,9 @@ else
     exit 1
 fi
 
-# 删除 gopanel 二进制文件
-sudo rm /usr/local/bin/gopanel
+# 删除 moe-chat 二进制文件
+sudo rm /usr/local/bin/moe-chat
 
-# 删除配置文件
-CONFIG_DIR="/opt/gopanel"
-sudo rm -f "$CONFIG_DIR/gopanel_config.json"
-sudo rm -f "$CONFIG_DIR/gopanel_Caddyfile"
-sudo rm -f "$CONFIG_DIR/gopanel_frps.conf"
-sudo rm -f "$CONFIG_DIR/gopanel_frpc.conf"
 
-echo "gopanel 已成功卸载。"
+
+echo "moe-chat 已成功卸载。"

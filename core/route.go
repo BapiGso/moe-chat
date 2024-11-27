@@ -45,6 +45,7 @@ func (c *Core) Route() {
 	c.e.Any("/file", handler.File)
 	c.e.Any("/model", handler.Model)
 	c.e.Any("/login", handler.Login)
+	c.e.Any("/register", handler.Register)
 	admin := c.e.Group("/admin", mymiddleware.AdminOnlyMiddleware)
 	admin.Any("", handler.Admin)
 	admin.Any("/user", handler.AdminUser)

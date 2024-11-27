@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
     <style>
+        /* 样式部分保持不变 */
         * {
-            /* 去除浏览器默认内外边距 */
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -21,7 +21,6 @@
         body {
             overflow-x: hidden;
             display: flex;
-            /* 渐变方向从左到右 */
             background: linear-gradient(to right, #C9E0ED, #DBBFF1);
         }
 
@@ -30,18 +29,14 @@
             z-index: 0;
             bottom: 0;
             border-radius: 50%;
-            /* 径向渐变 */
             background: radial-gradient(circle at 72% 28%, #fff 3px, #ff7edf 8%, #5b5b5b, #aad7f9 100%);
-            /* 泡泡内阴影 */
             box-shadow: inset 0 0 6px #fff,
             inset 3px 0 6px #eaf5fc,
             inset 2px -2px 10px #efcde6,
             inset 0 0 60px #f9f6de,
             0 0 20px #fff;
-            /* 动画 */
             animation: myMove 4s linear infinite;
         }
-
 
         @keyframes myMove {
             0% {
@@ -67,77 +62,60 @@
             }
         }
 
-        /* 最外层的大盒子 */
         article {
             width: 50vw;
+            min-width: 600px;
             height: 30vw;
+            min-height: 400px;
             display: flex;
             position: relative;
             z-index: 2;
             margin: auto;
             border-radius: 8px;
-            /* 设置边框 */
             border: 1px solid rgba(255, 255, 255, .6);
-            /* 设置盒子阴影 */
             box-shadow: 2px 1px 19px rgba(0, 0, 0, .1);
         }
 
-        /* 滑动的盒子 */
         section {
-            /* 宽度为大盒子的一半 */
             width: 50%;
             height: 100%;
-            /* 绝对定位 */
             position: absolute;
-            /* 距离大盒子左侧为0 */
-            /* 距离大盒子顶部为0 */
             z-index: 99;
             border-radius: 4px;
             background-color: #ded4ed;
             box-shadow: 2px 1px 19px rgba(0, 0, 0, .1);
-            /* 动画过渡，先加速再减速 */
             transition: 0.5s ease-in-out;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            & h1{
-                /* 文字间距 */
-                margin: 0 0 0 0;
-                letter-spacing: 5px;
-                color: white;
-                /* 禁止选中 */
-                user-select: none;
-                /* 文字阴影 */
-                text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
-            }
-
-            & p{
-                margin: 20px 0;
-                /* 禁止选中 */
-                user-select: none;
-                font-weight: bold;
-                color: white;
-                text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
-            }
         }
 
+        section h1 {
+            margin: 0 0 0 0;
+            letter-spacing: 5px;
+            color: white;
+            user-select: none;
+            text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
+        }
 
-        /* 图片盒子 */
-        img{
+        section p {
+            margin: 20px 0;
+            user-select: none;
+            font-weight: bold;
+            color: white;
+            text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
+        }
+
+        img {
             width: 70%;
-            /*height: 200px;*/
-            /* 设置为圆形 */
             border-radius: 50%;
-            /* 设置用户禁止选中 */
             user-select: none;
             overflow: hidden;
             box-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
             transition: 0.5s;
         }
 
-
-        /* 登录和注册盒子 */
         form {
             flex: 1;
             height: 100%;
@@ -145,27 +123,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            & fieldset {
-                display: flex;
-                justify-content: center;
-                border: none;
-                & p{
-                    height: 30px;
-                    line-height: 30px;
-                    user-select: none;
-                    font-size: 14px;
-                    color: white;
-                }
-                & p:hover{
-                    cursor: pointer;
-                    border-bottom: 1px solid white;
-
-                }
-            }
         }
 
+        form fieldset {
+            display: flex;
+            justify-content: center;
+            border: none;
+        }
 
-        /* 标题 */
+        form fieldset p {
+            height: 30px;
+            line-height: 30px;
+            user-select: none;
+            font-size: 14px;
+            color: white;
+        }
+
+        form fieldset p:hover {
+            cursor: pointer;
+            border-bottom: 1px solid white;
+        }
+
         h1 {
             font-size: 2em;
             margin: .5em 0 1.5em 0;
@@ -173,11 +151,8 @@
             user-select: none;
             letter-spacing: 5px;
             text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
-
         }
 
-
-        /* 输入框 */
         input {
             width: 60%;
             height: 40px;
@@ -186,23 +161,18 @@
             border: 1px solid #fff;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 120px;
-            /* 增加磨砂质感 */
             backdrop-filter: blur(10px);
             outline: none;
-            /* 光标颜色 */
-            &:focus {
-                color: #b0cfe9;
-            }
-            /* 聚焦时隐藏文字 */
-            &:focus::placeholder {
-                opacity: 0;
-            }
         }
 
+        input:focus {
+            color: #b0cfe9;
+        }
 
+        input:focus::placeholder {
+            opacity: 0;
+        }
 
-
-        /* 按钮 */
         input[type="submit"] {
             width: 100px;
             height: 30px;
@@ -219,158 +189,114 @@
             cursor: pointer;
             opacity: .8;
         }
+
+        /* 通知样式 */
+        /* 通知样式 */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: rgba(173, 216, 230, 0.8); /* 柔和的蓝色 */
             backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #fff;
             font-size: 16px;
-            font-weight: 500;
-            opacity: 0;
             transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
             z-index: 1000;
-        }
-
-        .notification.success {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.5);
-        }
-
-        .notification.error {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.5);
         }
 
         .notification.visible {
             opacity: 1;
+            pointer-events: auto;
         }
     </style>
+    <script src="/assets/js/alpine.min.js" defer></script>
 </head>
-<body>
-<div id="notification" class="notification"></div>
-<script>
-    // 创建通知函数
-    function showNotification(message, type = 'success') {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.className = `notification ${type} visible`;
-
-        setTimeout(() => {
-            notification.className = 'notification';
-        }, 3000);
-    }
-
-    // 表单提交处理
-    function handleSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-
-        fetch('/login', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (response.status === 302) {
-                    // 后端返回 302 状态码，进行跳转
-                    window.location.href = response.headers.get('Location');
-                } else {
-                    // 解析 JSON 响应
-                    return response.json();
-                }
-            })
-            .then(data => {
-                // 显示后端返回的消息
-                showNotification(data.message, data.success ? 'success' : 'error');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('网络错误', 'error');
-            });
-    }
-</script>
+<body x-data="app()">
 <article>
-    <section>
+    <section :style="sectionStyle">
         <h1>WELCOME</h1>
         <p>Moe-Chat!</p>
-        <img src="/assets/img/waoku.webp" alt="">
+        <img :src="imageSrc" alt="">
     </section>
-    <form action="" method="post" onsubmit="handleSubmit(event)">
-        <h1>Register</h1>
-        <input type="hidden" name="action" value="register">
-        <input type="email" placeholder="email" name="email" aria-label>
-        <input type="password" placeholder="password" name="pwd" aria-label>
-        <fieldset role="group">
-            <input type="submit" value="创建账户">
-            <p onclick="mySwitch()">前去登录</p>
-        </fieldset>
-    </form>
-    <form action="" method="post" onsubmit="handleSubmit(event)">
-        <h1>Login</h1>
-        <input type="hidden" name="action" value="login">
-        <input type="email" placeholder="email" name="email" aria-label>
-        <input type="password" placeholder="password" name="pwd" aria-label>
-        <fieldset role="group">
-            <input type="submit" value="登录">
-            <p onclick="mySwitch()">没有账号？注册</p>
-        </fieldset>
-    </form>
-
+    <template x-for="type in ['register', 'login']" :key="type">
+        <form :action="type === 'register' ? '/register' : '/login'" method="post" @submit.prevent="handleSubmit($event)">
+            <h1 x-text="type === 'register' ? 'Register' : 'Login'"></h1>
+            <input type="email" placeholder="email" name="email" aria-label>
+            <input type="password" placeholder="password" name="pwd" aria-label>
+            <fieldset role="group">
+                <input type="submit" :value="type === 'register' ? '创建账户' : '登录'">
+                <p @click="mySwitch()" x-text="type === 'register' ? '前去登录' : '没有账号？注册'"></p>
+            </fieldset>
+        </form>
+    </template>
 </article>
+<div class="notification" :class="notificationClass" x-text="notificationMessage"></div>
 <script>
-    // 滑动的状态
-    let flag=true
-    let prebox =document.getElementsByTagName('section')[0]
-    let img=document.getElementsByTagName('img')[0]
-    const mySwitch=()=>{
-        if(flag){
-            // 获取到滑动盒子的dom元素并修改它移动的位置
-            prebox.style.transform='translateX(100%)'
-            // 获取到滑动盒子的dom元素并修改它的背景颜色
-            prebox.style.backgroundColor ='#c9e0ed'
-            //修改图片的路径
-            img.setAttribute("src","/assets/img/wuwu.webp")
-        }
-        else {
-            prebox.style.transform='translateX(0%)'
-            prebox.style.backgroundColor ='#ded4ed'
-            img.setAttribute("src","/assets/img/waoku.webp")
-        }
-        flag=!flag
+    function app() {
+        return {
+            init(){
+                setInterval(() => {
+                    this.bubleCreate();
+                }, 200);
+            },
+            flag: true,
+            imageSrc: '/assets/img/waoku.webp',
+            notificationMessage: '',
+            notificationClass: 'notification',
+            sectionStyle: {
+                transform: 'translateX(0%)',
+                backgroundColor: '#ded4ed'
+            },
+
+            mySwitch() {
+                this.flag = !this.flag;
+                this.sectionStyle.transform = this.flag ? 'translateX(0%)' : 'translateX(100%)';
+                this.sectionStyle.backgroundColor = this.flag ? '#ded4ed' : '#c9e0ed';
+                this.imageSrc = this.flag ? '/assets/img/waoku.webp' : '/assets/img/wuwu.webp';
+            },
+
+            showNotification(message) {
+                this.notificationMessage = message;
+                this.notificationClass = 'notification visible';
+
+                setTimeout(() => {
+                    this.notificationClass = 'notification';
+                }, 3000);
+            },
+
+            handleSubmit: async function(event) {
+                const form = event.target;
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                // console.log(response.status)
+                if (response.status === 202) {
+                    window.location.href = await response.json();
+                    return;
+                }
+                const data = await response.json();
+                this.showNotification(data);
+            },
+            bubleCreate(){
+                const body = document.body
+                const buble = document.createElement('span')
+                let r = Math.random()*5 + 25 //半径大小为25~30
+                buble.style.width=r+'px'
+                buble.style.height=r+'px'
+                buble.style.left=Math.random()*innerWidth+'px'
+                body.append(buble)
+                setTimeout(()=>{
+                    buble.remove()
+                },4000)
+            }
+        };
     }
-</script>
-<script>
-    const bubleCreate=()=>{
-        // 获取body元素
-        const body = document.body
-        // 创建泡泡元素
-        const buble = document.createElement('span')
-        // 设置泡泡半径
-        let r = Math.random()*5 + 25 //半径大小为25~30
-        // 设置泡泡的宽高
-        buble.style.width=r+'px'
-        buble.style.height=r+'px'
-        // 设置泡泡的随机起点
-        buble.style.left=Math.random()*innerWidth+'px'
-        // 为body添加buble元素
-        body.append(buble)
-        // 4s清除一次泡泡
-        setTimeout(()=>{
-            buble.remove()
-        },4000)
-    }
-    // 每200ms生成一个泡泡
-    setInterval(() => {
-        bubleCreate()
-    }, 200);
 </script>
 </body>
 </html>
-

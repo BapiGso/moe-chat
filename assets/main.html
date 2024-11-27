@@ -23,7 +23,7 @@
                  :flex-row-reverse="m.role === 'user'?undefined:false">
             <!-- 先渲染图片 -->
             <template x-if="m.files && m.files.length > 0">
-                <div flex flex-row max-w-xs
+                <div flex flex-row max-w-5xl p-3
                      :flex-row-reverse="m.role === 'user'?undefined:false"
                      :bg-purple-50="m.role === 'user'?undefined:false">
                     <template x-for="file in m.files">
@@ -33,7 +33,7 @@
             </template>
             <template x-if="!m.files && m.content">
             <!-- 再渲染消息内容 -->
-                <div rounded max-w-xl p-3 bg-blue-50 class="pico"
+                <div rounded max-w-5xl p-3 bg-blue-50 class="pico"
                      :hidden="m.role==='system'?undefined:false"
                      :flex-row-reverse="m.role === 'user'?undefined:false"
                      :bg-purple-50="m.role === 'user'?undefined:false"
