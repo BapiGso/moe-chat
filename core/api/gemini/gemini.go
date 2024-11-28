@@ -55,15 +55,14 @@ func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) 
 	//model.SetTopK(int32(completion.TopK))
 	model.SetMaxOutputTokens(int32(completion.MaxTokens))
 	cs := model.StartChat()
-	history, lastMessage, err := transformToProviderMessages(ctx, completion.Messages)
+	history, _, err := transformToProviderMessages(ctx, completion.Messages)
 	if err != nil {
 		return err
 	}
 	cs.History = history
-
 	//model.SystemInstruction = genai.NewUserContent(genai.Text("You are Yoda from Star Wars."))
 	//model.ResponseMIMEType = "application/json"
-	c.resStream = cs.SendMessageStream(ctx.Request().Context(), genai.Text(lastMessage.Content))
+	c.resStream = cs.SendMessageStream(ctx.Request().Context()) //genai.Text(lastMessage.Content))
 
 	return err
 }

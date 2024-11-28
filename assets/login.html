@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
+    <link rel="icon" type="image/jpg" href="/assets/img/favicon.png" />
     <style>
         /* 样式部分保持不变 */
         * {
@@ -108,7 +109,7 @@
         }
 
         img {
-            width: 70%;
+            width: 59%;
             border-radius: 50%;
             user-select: none;
             overflow: hidden;
@@ -216,7 +217,7 @@
     </style>
     <script src="/assets/js/alpine.min.js" defer></script>
 </head>
-<body x-data="app()">
+<body x-data="app()" hidden>
 <article>
     <section :style="sectionStyle">
         <h1>WELCOME</h1>

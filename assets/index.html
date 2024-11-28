@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>MoeChat</title>
-    <link rel="icon" type="image/jpg" href="/assets/img/default-avatar.png" />
-    <script type="text/javascript" src="/assets/js/http_cdn.jsdelivr.net_npm_@unocss_runtime_attributify.global.js"></script>
+    <link rel="icon" type="image/jpg" href="/assets/img/favicon.png" />
+    <script type="text/javascript" src="/assets/js/attributify.global.js"></script>
 
     <script type="text/javascript" src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/highlight.min.js"></script>
@@ -51,7 +51,7 @@
     </script>
     <link rel="stylesheet" href="/assets/css/tiny.tailwind.css">
 </head>
-<body flex overflow-hidden h-screen m-0>
+<body flex overflow-hidden h-screen m-0 >
     <aside x-init="devFetch($el)" x-show="switchShow.menu" flex flex-col w-15% justify-between bg-gray-50>
         {{template "aside.html"}}
     </aside>

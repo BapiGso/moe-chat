@@ -16,7 +16,7 @@ func transformToProviderMessages(ctx echo.Context, msgs []part.Message) ([]*gena
 
 	var genaiMessages []*genai.Content
 
-	for _, msg := range msgs[:len(msgs)-1] {
+	for _, msg := range msgs { //[:len(msgs)-1] {
 		if msg.Files != nil {
 			var file database.File
 			var tmpparts []genai.Part
@@ -36,17 +36,22 @@ func transformToProviderMessages(ctx echo.Context, msgs []part.Message) ([]*gena
 				Parts: tmpparts,
 			})
 		} else {
-			genaiMessages = append(genaiMessages, &genai.Content{
-				Role: func() string {
-					if msg.Role == "assistant" {
-						return "model"
-					}
-					return msg.Role
-				}(),
-				Parts: []genai.Part{
-					genai.Text(msg.Content),
-				},
-			})
+			switch msg.Role {
+			case "user":
+				genaiMessages = append(genaiMessages, &genai.Content{
+					Parts: []genai.Part{
+						genai.Text(msg.Content),
+					},
+					Role: "user",
+				})
+			case "assistant":
+				genaiMessages = append(genaiMessages, &genai.Content{
+					Parts: []genai.Part{
+						genai.Text(msg.Content),
+					},
+					Role: "model",
+				})
+			}
 		}
 	}
 

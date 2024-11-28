@@ -18,7 +18,7 @@ func Login(c echo.Context) error {
 	case http.MethodPost:
 		req := &struct {
 			Email string `form:"email" validate:"email"`
-			Pwd   string `form:"pwd"`
+			Pwd   string `form:"pwd" validate:"required,min=1,max=200"`
 		}{}
 		if err := c.Bind(req); err != nil {
 			return err

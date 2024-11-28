@@ -69,7 +69,7 @@
     <form flex flex-row justify-between items-end rounded-3xl m-b-5 w-80% bg-gray-50 shadow-sm hover:shadow-lg transition-all>
         <i m-2 class="logo i-add" @click="$refs.files.click()"></i>
         <i m-2 class="logo i-slider" @click="switchShow.chatSetting=true"></i>
-        <textarea flex-1 min-h-6 h-auto m-2 p-0 resize-none border-none overscroll-none bg-gray-50 font-sans focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
+        <textarea flex-1 max-h-96 min-h-6 h-auto m-2 p-0 resize-none border-none overscroll-none bg-gray-50 font-sans focus:outline-none focus:ring-0 placeholder="type you prompt" x-bind="userContent" rows="1"></textarea>
         <i m-2 class="logo i-mic" @click="alert('这个功能还没做')"></i>
     </form>
 </footer>

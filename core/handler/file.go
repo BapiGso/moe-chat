@@ -56,7 +56,7 @@ func File(c echo.Context) error {
 			}
 
 			// Save the file record to the database
-			if _, err := database.DB.NamedQuery(`INSERT OR IGNORE INTO file 
+			if _, err := database.DB.NamedQuery(`INSERT OR REPLACE INTO file 
     	(hash, email, filename, mime_type, data, created_at, updated_at)
 		VALUES (:hash, :email, :filename, :mime_type, :data, :created_at, :updated_at)`, newFile); err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, "Unable to save file to database")

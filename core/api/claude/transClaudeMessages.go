@@ -47,9 +47,12 @@ func transformToProviderMessages(ctx echo.Context, msgs []part.Message) ([]anthr
 
 			}
 		} else {
-			if msg.Role == "user" {
+			switch msg.Role {
+			case "system":
+				//claudeMessages = append(claudeMessages, anthropic.NewMultiSystemMessages()...)
+			case "user":
 				claudeMessages = append(claudeMessages, anthropic.NewUserTextMessage(msg.Content))
-			} else if msg.Role == "assistant" {
+			case "assistant":
 				claudeMessages = append(claudeMessages, anthropic.NewAssistantTextMessage(msg.Content))
 			}
 		}
