@@ -55,14 +55,16 @@ func (c *Client) CreateResStream(ctx echo.Context, completion *part.Completion) 
 	//model.SetTopK(int32(completion.TopK))
 	model.SetMaxOutputTokens(int32(completion.MaxTokens))
 	cs := model.StartChat()
-	history, _, err := transformToProviderMessages(ctx, completion.Messages)
+	lastmessage, err := transformToProviderMessages(ctx, cs, completion.Messages)
 	if err != nil {
 		return err
 	}
-	cs.History = history
+	//cs.History = history
 	//model.SystemInstruction = genai.NewUserContent(genai.Text("You are Yoda from Star Wars."))
 	//model.ResponseMIMEType = "application/json"
-	c.resStream = cs.SendMessageStream(ctx.Request().Context()) //genai.Text(lastMessage.Content))
+	model.GenerateContentStream(ctx.Request().Context())
+	//https://github.com/google/generative-ai-go/issues/197#issuecomment-2508912981
+	c.resStream = cs.SendMessageStream(ctx.Request().Context(), lastmessage.Parts...)
 
 	return err
 }
